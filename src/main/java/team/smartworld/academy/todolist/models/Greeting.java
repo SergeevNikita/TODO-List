@@ -1,8 +1,12 @@
 package team.smartworld.academy.todolist.models;
 
+import lombok.*;
+
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
 public class Greeting {
 
     @Id
@@ -19,19 +23,4 @@ public class Greeting {
         this.content = content;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
 }

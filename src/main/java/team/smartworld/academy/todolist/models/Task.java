@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import java.util.Date;
 
 /**
- * TodoList model
+ * Task model
  *
  * @author Sergeev Nikita
  * @version 1.0
@@ -21,13 +21,18 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TodoList {
+public class Task {
+
     /**
      * ID
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    /**
+     * id списка дел к которому принадлежит (подумать как реализовать связь)
+     */
+    private Long idTodoList;
     /**
      * Дата создания
      */
@@ -37,13 +42,19 @@ public class TodoList {
      */
     private Date dateChange;
     /**
-     * Название списка
+     * Название дела
      */
     private String name;
     /**
-     * Состояние (завершено или нет)
+     * Краткое описание title
      */
-    private boolean isComleted;
-    /* Список дел (нужно ли?) */
-    //List<Task> todoList;
+    private String title;
+    /**
+     * Срочность 1-5
+     */
+    private byte priority;
+    /**
+     * Состояние (зделано или нет)
+     */
+    private boolean isCompleted;
 }

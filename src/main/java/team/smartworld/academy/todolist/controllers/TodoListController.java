@@ -64,7 +64,8 @@ public class TodoListController {
     /**
      * Method for getting all TodoLists
      *
-     * @param id start id search
+     * @param id    start id search
+     * @param limit limit getting TodoLists
      * @return all TodoLists
      */
     @GetMapping("/get_all_todo_lists")

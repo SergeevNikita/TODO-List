@@ -17,7 +17,7 @@ public class TaskController {
      *
      * @param id is the id of the Task to delete in DB
      */
-    @DeleteMapping("/delete_deed/{id}")
+    @DeleteMapping("/delete_task/{id}")
     public void deleteTask(@PathVariable String id) {
         // добавить проверки ID
         //  repository.deleteById(id);
@@ -55,6 +55,7 @@ public class TaskController {
      * @param newTask new Task Date
      * @return Task
      */
+    // TODO найти больше инфы и доработать!!!
     @PostMapping("/new_task")
     public Task newTask(@RequestBody Task newTask) {
         return null;

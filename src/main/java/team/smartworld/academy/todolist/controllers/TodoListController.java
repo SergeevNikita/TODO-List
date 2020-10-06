@@ -34,7 +34,7 @@ public class TodoListController {
      */
     @GetMapping("/get_todo_list/{id}")
     public TodoList getTodoList(@PathVariable String id) {
-
+        //return new TodoList(1L, new Date(), new Date(), "List", true);
         return null;
     }
 
@@ -45,6 +45,7 @@ public class TodoListController {
      * @param id              is the id for search TodoList in DB
      * @return TodoList
      */
+    // TODO найти больше инфы и доработать!!!
     @PutMapping("/change_todo_list/{id}")
     public TodoList changeTodoList(@RequestBody String newNameTodoList, @PathVariable String id) {
         return null;
@@ -56,6 +57,7 @@ public class TodoListController {
      * @param newTodoList new TodoList date
      * @return TodoList
      */
+    // TODO найти больше инфы и доработать!!!
     @PostMapping("/new_todo_list")
     public TodoList newTodoList(@RequestBody TodoList newTodoList) {
         return null;
@@ -68,6 +70,7 @@ public class TodoListController {
      * @param limit limit getting TodoLists
      * @return all TodoLists
      */
+    // TODO найти больше инфы и доработать!!!
     @GetMapping("/get_all_todo_lists")
     public List<TodoList> getAllTodoLists(@RequestParam(value = "id", defaultValue = "1") String id,
                                           @RequestParam(value = "limit", defaultValue = "10") String limit) {

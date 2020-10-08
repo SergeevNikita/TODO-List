@@ -1,5 +1,8 @@
 package team.smartworld.academy.todolist.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.smartworld.academy.todolist.models.Task;
 
@@ -23,18 +26,32 @@ public class TaskController {
         //  repository.deleteById(id);
     }
 
-
     /**
      * Method for mark done in Task.
      *
      * @param id is the id of the Task to mark done in DB
-     * @return mark done Task
+     *           (uri type mark_done_task/?id={number}, json body is empty)
+     * @return error status or marked done Task ID and status
      */
-    @PutMapping("/mark_done_task/{id}")
-    public Task markDoneTask(@PathVariable String id) {
+    @RequestMapping(value = "/mark_done_task/",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> markDoneTask(@RequestParam String id) {
         // добавить проверки ID
-        return null;
+//        Long idL;
+//        try {
+//
+//                id = Long.getLong(map.get("id"));
+//                поиск в базе
+//        }
+//        catch() { return ошибка не число и статус http}
+//        catch() { return ошибка не найдено в базе и статус http}
+//        установка isComplete(true);
+        return new ResponseEntity<>(id, HttpStatus.OK); //
     }
+
+//    public ResponseEntity<?> markDoneTask(@RequestBody Map<String, String> map) {
 
     /**
      * Method for change in Task.

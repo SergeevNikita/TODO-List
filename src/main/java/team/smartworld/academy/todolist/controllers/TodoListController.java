@@ -1,5 +1,8 @@
 package team.smartworld.academy.todolist.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.smartworld.academy.todolist.models.TodoList;
 
@@ -20,10 +23,14 @@ public class TodoListController {
      *
      * @param id is the id of the TodoList to delete in DB
      */
-    @DeleteMapping("/delete_todo_list/{id}")
-    public void deleteTodoList(@PathVariable String id) {
+    @RequestMapping(value = "/delete_todo_list",
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteTodoList(@RequestParam String id) {
         //добавить проверки ID
         //  repository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**

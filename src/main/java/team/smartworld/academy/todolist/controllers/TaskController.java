@@ -1,7 +1,6 @@
 package team.smartworld.academy.todolist.controllers;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +13,7 @@ import java.util.Map;
  * @version 1.0
  */
 @RestController
+@RequestMapping(value = "/todo/api/v1.0/task")
 public class TaskController {
 
     /**
@@ -22,14 +22,12 @@ public class TaskController {
      * @param id is the id of the Task to delete in DB
      * @return status or error type end status
      */
-    @RequestMapping(value = "/delete_task/",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Exception> deleteTask(@RequestParam String id) {
+    @DeleteMapping
+    public ResponseEntity<?> deleteTask(@RequestParam String id) {
         // добавить проверки ID
         //  repository.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        // return new ResponseEntity<>("DeleteTask", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -40,12 +38,9 @@ public class TaskController {
      * @return status or error type end status
      */
 
-    // метод запроса PUT или PATCH? Разобраться со статусами http ответов для всех методов...
-    @RequestMapping(value = "/mark_done_task/",
-            method = RequestMethod.PATCH,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Exception> markDoneTask(@RequestParam String id) {
+    // Разобраться со статусами http ответов для всех методов...
+    @PatchMapping
+    public ResponseEntity<?> markDoneTask(@RequestParam String id) {
         // добавить проверки ID
 //        Long idL;
 //        try {
@@ -56,7 +51,7 @@ public class TaskController {
 //        catch() { return ошибка не число и статус http}
 //        catch() { return ошибка не найдено в базе и статус http}
 //        установка isComplete(true);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT); //
+        return new ResponseEntity<>(HttpStatus.OK); //
     }
 
 //    public ResponseEntity<?> markDoneTask(@RequestBody Map<String, String> map) {
@@ -68,10 +63,7 @@ public class TaskController {
      * @param changeTask changed Task date
      * @return status or error type end status
      */
-    @RequestMapping(value = "/change_task/",
-            method = RequestMethod.PUT,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping
     public ResponseEntity<?> changeTask(@RequestParam String id,
                                         @RequestBody Map<String, String> changeTask) {
         // Проверки
@@ -85,10 +77,7 @@ public class TaskController {
      * @param newTask new Task Date
      * @return Task and status or error and status
      */
-    @RequestMapping(value = "/new_task/",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<?> newTask(@RequestBody Map<String, String> newTask) {
         // Проверки
         // создание и сохранение в БД
@@ -101,10 +90,7 @@ public class TaskController {
      * @param id is the id for search Task in DB
      * @return Task and status or error and status
      */
-    @RequestMapping(value = "/get_task/",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<?> getTask(@RequestParam String id) {
         // Проверить id
         // Найти в БД

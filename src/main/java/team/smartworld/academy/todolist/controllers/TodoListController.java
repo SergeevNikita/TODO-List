@@ -1,10 +1,10 @@
 package team.smartworld.academy.todolist.controllers;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team.smartworld.academy.todolist.models.TodoList;
+
+import java.util.Map;
 
 /**
  * TodoList controller
@@ -14,6 +14,7 @@ import team.smartworld.academy.todolist.models.TodoList;
  */
 
 @RestController
+@RequestMapping(value = "/todo/api/v1.0/todolist")
 public class TodoListController {
 
     /**
@@ -22,10 +23,7 @@ public class TodoListController {
      * @param id is the id of the TodoList to delete in DB
      * @return status or error type end status
      */
-    @RequestMapping(value = "/delete_todo_list/",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping
     public ResponseEntity<?> deleteTodoList(@RequestParam String id) {
         //добавить проверки ID
         //  repository.deleteById(id);
@@ -38,10 +36,7 @@ public class TodoListController {
      * @param id is the id for search TodoList in DB
      * @return TodoList and status or error and status
      */
-    @RequestMapping(value = "/get_todo_list/",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<?> getTodoList(@RequestParam String id) {
         // Проверки
         // Поиск в БД
@@ -55,11 +50,7 @@ public class TodoListController {
      * @param id      is the id for search TodoList in DB
      * @return status or error and status
      */
-    // PUT or PATCH ???
-    @RequestMapping(value = "/rename_todo_list/",
-            method = RequestMethod.PATCH,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping
     public ResponseEntity<?> renameTodoList(@RequestParam String id,
                                             @RequestParam String newName) {
         // Проверки
@@ -72,11 +63,8 @@ public class TodoListController {
      * @param newTodoList new TodoList date
      * @return TodoList and status or error and status
      */
-    @RequestMapping(value = "/new_todo_list/",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> newTodoList(@RequestBody TodoList newTodoList) {
+    @PostMapping
+    public ResponseEntity<?> newTodoList(@RequestBody Map<String, String> newTodoList) {
         // Проверки
         // Создание и сохранение в БД
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -89,10 +77,7 @@ public class TodoListController {
      * @param limit   limit getting TodoLists
      * @return all TodoLists and status or error and status
      */
-    @RequestMapping(value = "/get_all_todo_lists/",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("all")
     public ResponseEntity<?> getAllTodoLists(@RequestParam(value = "startId", defaultValue = "1") String startId,
                                              @RequestParam(value = "limit", defaultValue = "10") String limit) {
         // Проверки и прочее.

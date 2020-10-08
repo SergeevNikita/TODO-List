@@ -40,7 +40,6 @@ public class TodoListController {
      * @param id is the id for search TodoList in DB
      * @return TodoList and status or error and status
      */
-    @GetMapping("/get_todo_list/{id}")
     @RequestMapping(value = "/get_todo_list/",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,
@@ -54,14 +53,19 @@ public class TodoListController {
     /**
      * Method for rename TodoLIst
      *
-     * @param newNameTodoList new name for TodoList
-     * @param id              is the id for search TodoList in DB
-     * @return TodoList
+     * @param name new name for TodoList
+     * @param id   is the id for search TodoList in DB
+     * @return status or error and status
      */
-    // TODO найти больше инфы и доработать!!!
-    @PutMapping("/change_todo_list/{id}")
-    public TodoList changeTodoList(@RequestBody String newNameTodoList, @PathVariable String id) {
-        return null;
+    // PUT or PATCH ???
+    @RequestMapping(value = "/rename_todo_list/",
+            method = RequestMethod.PATCH,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> renameTodoList(@RequestParam String id,
+                                            @RequestBody String name) {
+        // Проверки
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**

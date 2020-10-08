@@ -39,9 +39,9 @@ public class TaskController {
      * @return status or error type end status
      */
 
-    // TODO метод запроса PUT или PATCH? Разобраться со статусами http ответов для всех  методов...
+    // метод запроса PUT или PATCH? Разобраться со статусами http ответов для всех методов...
     @RequestMapping(value = "/mark_done_task/",
-            method = RequestMethod.PUT,
+            method = RequestMethod.PATCH,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Exception> markDoneTask(@RequestParam String id) {

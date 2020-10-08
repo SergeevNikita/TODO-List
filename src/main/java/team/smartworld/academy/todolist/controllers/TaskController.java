@@ -19,11 +19,16 @@ public class TaskController {
      * Method for deleting Task in TodoList.
      *
      * @param id is the id of the Task to delete in DB
+     * @return is 204 NO CONTENT or Error type end status
      */
-    @DeleteMapping("/delete_task/{id}")
-    public void deleteTask(@PathVariable String id) {
+    @RequestMapping(value = "/delete_task/",
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Exception> deleteTask(@RequestParam String id) {
         // добавить проверки ID
         //  repository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -31,13 +36,15 @@ public class TaskController {
      *
      * @param id is the id of the Task to mark done in DB
      *           (uri type mark_done_task/?id={number}, json body is empty)
-     * @return error status or marked done Task ID and status
+     * @return error status or marked done Task ID and status 204 NO CONTENT ???
      */
+
+    // TODO метод запроса PUT или PATCH? Разобраться со статусами http ответа...
     @RequestMapping(value = "/mark_done_task/",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> markDoneTask(@RequestParam String id) {
+    public ResponseEntity<Exception> markDoneTask(@RequestParam String id) {
         // добавить проверки ID
 //        Long idL;
 //        try {
@@ -48,7 +55,7 @@ public class TaskController {
 //        catch() { return ошибка не число и статус http}
 //        catch() { return ошибка не найдено в базе и статус http}
 //        установка isComplete(true);
-        return new ResponseEntity<>(id, HttpStatus.OK); //
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT); //
     }
 
 //    public ResponseEntity<?> markDoneTask(@RequestBody Map<String, String> map) {

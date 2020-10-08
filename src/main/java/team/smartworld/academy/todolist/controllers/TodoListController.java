@@ -22,8 +22,9 @@ public class TodoListController {
      * Method for deleting TodoList.
      *
      * @param id is the id of the TodoList to delete in DB
+     * @return status or error type end status
      */
-    @RequestMapping(value = "/delete_todo_list",
+    @RequestMapping(value = "/delete_todo_list/",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -37,12 +38,17 @@ public class TodoListController {
      * Method for getting TodoList
      *
      * @param id is the id for search TodoList in DB
-     * @return TodoList
+     * @return TodoList and status or error and status
      */
     @GetMapping("/get_todo_list/{id}")
-    public TodoList getTodoList(@PathVariable String id) {
-        //return new TodoList(1L, new Date(), new Date(), "List", true);
-        return null;
+    @RequestMapping(value = "/get_todo_list/",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getTodoList(@RequestParam String id) {
+        // Проверки
+        // Поиск в БД
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**

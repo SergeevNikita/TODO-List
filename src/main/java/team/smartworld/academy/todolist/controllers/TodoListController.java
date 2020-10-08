@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.smartworld.academy.todolist.models.TodoList;
 
-import java.util.List;
-
 /**
  * TodoList controller
  *
@@ -53,8 +51,8 @@ public class TodoListController {
     /**
      * Method for rename TodoLIst
      *
-     * @param name new name for TodoList
-     * @param id   is the id for search TodoList in DB
+     * @param newName new name for TodoList
+     * @param id      is the id for search TodoList in DB
      * @return status or error and status
      */
     // PUT or PATCH ???
@@ -63,7 +61,7 @@ public class TodoListController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> renameTodoList(@RequestParam String id,
-                                            @RequestBody String name) {
+                                            @RequestParam String newName) {
         // Проверки
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -87,14 +85,17 @@ public class TodoListController {
     /**
      * Method for getting all TodoLists
      *
-     * @param id    start id search
-     * @param limit limit getting TodoLists
-     * @return all TodoLists
+     * @param startId start id search
+     * @param limit   limit getting TodoLists
+     * @return all TodoLists and status or error and status
      */
-    // TODO найти больше инфы и доработать!!!
-    @GetMapping("/get_all_todo_lists")
-    public List<TodoList> getAllTodoLists(@RequestParam(value = "id", defaultValue = "1") String id,
-                                          @RequestParam(value = "limit", defaultValue = "10") String limit) {
-        return null;
+    @RequestMapping(value = "/get_all_todo_lists/",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getAllTodoLists(@RequestParam(value = "startId", defaultValue = "1") String startId,
+                                             @RequestParam(value = "limit", defaultValue = "10") String limit) {
+        // Проверки и прочее.
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -4,7 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team.smartworld.academy.todolist.models.Task;
+
+import java.util.Map;
 
 /**
  * Task controller
@@ -71,7 +72,8 @@ public class TaskController {
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> changeTask(@PathVariable String id, @RequestBody Task changeTask) {
+    public ResponseEntity<?> changeTask(@RequestParam String id,
+                                        @RequestBody Map<String, String> changeTask) {
         // Проверки
         // изменение
         return new ResponseEntity<>(HttpStatus.OK);
@@ -87,7 +89,7 @@ public class TaskController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> newTask(@RequestBody Task newTask) {
+    public ResponseEntity<?> newTask(@RequestBody Map<String, String> newTask) {
         // Проверки
         // создание и сохранение в БД
         return new ResponseEntity<>(HttpStatus.OK);

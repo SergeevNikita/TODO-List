@@ -89,10 +89,15 @@ public class TaskController {
      * Method for getting Task
      *
      * @param id is the id for search Task in DB
-     * @return Task
+     * @return Task and status 200 OK or error and status
      */
-    @GetMapping("/get_task/{id}")
-    public Task getTask(@PathVariable String id) {
-        return null;
+    @RequestMapping(value = "/get_task/",
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getTask(@RequestParam String id) {
+        // Проверить id
+        // Найти в БД
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

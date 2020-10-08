@@ -72,12 +72,16 @@ public class TodoListController {
      * Method for create TodoList
      *
      * @param newTodoList new TodoList date
-     * @return TodoList
+     * @return TodoList and status or error and status
      */
-    // TODO найти больше инфы и доработать!!!
-    @PostMapping("/new_todo_list")
-    public TodoList newTodoList(@RequestBody TodoList newTodoList) {
-        return null;
+    @RequestMapping(value = "/new_todo_list/",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> newTodoList(@RequestBody TodoList newTodoList) {
+        // Проверки
+        // Создание и сохранение в БД
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     /**

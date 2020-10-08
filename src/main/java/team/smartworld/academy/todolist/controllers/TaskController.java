@@ -63,14 +63,18 @@ public class TaskController {
     /**
      * Method for change in Task.
      *
-     * @param changeTask changed Task date
      * @param id         is the id of the Task to change in DB
+     * @param changeTask changed Task date
      * @return status or error type end status
      */
-    // TODO найти больше инфы и доработать!!!
-    @PutMapping("/change_task/{id}")
-    public Task changeTask(@RequestBody Task changeTask, @PathVariable String id) {
-        return null;
+    @RequestMapping(value = "/change_task/",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> changeTask(@PathVariable String id, @RequestBody Task changeTask) {
+        // Проверки
+        // изменение
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**

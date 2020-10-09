@@ -52,7 +52,7 @@ public class TodoListController {
      */
     @PatchMapping
     public ResponseEntity<?> renameTodoList(@RequestParam String id,
-                                            @RequestParam String newName) {
+                                            @RequestBody Map<String, String> newName) {
         // Проверки
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -60,11 +60,11 @@ public class TodoListController {
     /**
      * Method for create TodoList
      *
-     * @param newTodoList new TodoList date
+     * @param newNameTodoList new TodoList date
      * @return TodoList and status or error and status
      */
     @PostMapping
-    public ResponseEntity<?> newTodoList(@RequestBody Map<String, String> newTodoList) {
+    public ResponseEntity<?> newTodoList(@RequestBody Map<String, String> newNameTodoList) {
         // Проверки
         // Создание и сохранение в БД
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -73,13 +73,15 @@ public class TodoListController {
     /**
      * Method for getting all TodoLists
      *
-     * @param startId start id search
-     * @param limit   limit getting TodoLists
+     * @param startId             start id search
+     * @param limit               limit getting TodoLists
+     * @param sortAndFilterParams params sorted and filters
      * @return all TodoLists and status or error and status
      */
     @GetMapping("all")
     public ResponseEntity<?> getAllTodoLists(@RequestParam(value = "startId", defaultValue = "1") String startId,
-                                             @RequestParam(value = "limit", defaultValue = "10") String limit) {
+                                             @RequestParam(value = "limit", defaultValue = "10") String limit,
+                                             @RequestBody Map<String, String> sortAndFilterParams) {
         // Проверки и прочее.
         return new ResponseEntity<>(HttpStatus.OK);
     }

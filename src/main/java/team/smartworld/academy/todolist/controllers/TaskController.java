@@ -27,7 +27,7 @@ public class TaskController {
         // добавить проверки ID
         //  repository.deleteById(id);
         // return new ResponseEntity<>("DeleteTask", HttpStatus.NO_CONTENT);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -50,7 +50,7 @@ public class TaskController {
 //        }
 //        catch() { return ошибка не число и статус http}
 //        catch() { return ошибка не найдено в базе и статус http}
-//        установка isComplete(true);
+//        установка isDone(true);
         return new ResponseEntity<>(HttpStatus.OK); //
     }
 
@@ -81,7 +81,7 @@ public class TaskController {
     public ResponseEntity<?> newTask(@RequestBody Map<String, String> newTask) {
         // Проверки
         // создание и сохранение в БД
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     /**

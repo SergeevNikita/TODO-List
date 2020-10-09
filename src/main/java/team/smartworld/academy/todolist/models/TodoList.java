@@ -31,7 +31,7 @@ public class TodoList {
     /**
      * Дата создания
      */
-    private Date dateCreate;
+    private Date dateCreated;
     /**
      * Дата изменения
      */
@@ -43,7 +43,12 @@ public class TodoList {
     /**
      * Состояние (завершено или нет)
      */
-    private boolean isComleted;
+    private boolean isDone;
+
+    /**
+     * Количество завершенных Task
+     */
+    private Long numberOfCompletedTask;
     /* Список дел (нужно ли?) */
     //List<Task> todoList;
 }

@@ -36,7 +36,7 @@ public class Task {
     /**
      * Дата создания
      */
-    private Date dateCreate;
+    private Date dateCreated;
     /**
      * Дата изменения
      */
@@ -54,7 +54,7 @@ public class Task {
      */
     private byte priority;
     /**
-     * Состояние (зделано или нет)
+     * Состояние (сделано или нет)
      */
-    private boolean isCompleted;
+    private boolean isDone;
 }

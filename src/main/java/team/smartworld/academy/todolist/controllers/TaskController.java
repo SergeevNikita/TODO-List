@@ -1,10 +1,10 @@
 package team.smartworld.academy.todolist.controllers;
 
+import io.swagger.annotations.Api;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
+import team.smartworld.academy.todolist.models.Task;
 
 /**
  * Task controller
@@ -13,21 +13,20 @@ import java.util.Map;
  * @version 1.0
  */
 @RestController
-@RequestMapping(value = "/todo/api/v1.0/task")
+@RequestMapping(value = "/todo/api/task")
+@Api(value = "Task Controller", consumes = "json", produces = "json")
 public class TaskController {
 
     /**
      * Method for deleting Task in TodoList.
      *
      * @param id is the id of the Task to delete in DB
-     * @return status or error type end status
      */
-    @DeleteMapping
-    public ResponseEntity<?> deleteTask(@RequestParam String id) {
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTask(@PathVariable("id") Long id) {
         // добавить проверки ID
         //  repository.deleteById(id);
-        // return new ResponseEntity<>("DeleteTask", HttpStatus.NO_CONTENT);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -39,13 +38,9 @@ public class TaskController {
      */
 
     // Разобраться со статусами http ответов для всех методов...
-    @PatchMapping
-    public ResponseEntity<?> markDoneTask(@RequestParam String id) {
-        // добавить проверки ID
-//        Long idL;
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> markDoneTask(@PathVariable("id") Long id) {
 //        try {
-//
-//                id = Long.getLong(map.get("id"));
 //                поиск в базе
 //        }
 //        catch() { return ошибка не число и статус http}
@@ -63,9 +58,9 @@ public class TaskController {
      * @param changeTask changed Task date
      * @return status or error type end status
      */
-    @PutMapping
-    public ResponseEntity<?> changeTask(@RequestParam String id,
-                                        @RequestBody Map<String, String> changeTask) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> changeTask(@PathVariable("id") Long id,
+                                        @RequestBody Task changeTask) {
         // Проверки
         // изменение
         return new ResponseEntity<>(HttpStatus.OK);
@@ -78,7 +73,7 @@ public class TaskController {
      * @return Task and status or error and status
      */
     @PostMapping
-    public ResponseEntity<?> newTask(@RequestBody Map<String, String> newTask) {
+    public ResponseEntity<?> newTask(@RequestBody Task newTask) {
         // Проверки
         // создание и сохранение в БД
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -90,8 +85,8 @@ public class TaskController {
      * @param id is the id for search Task in DB
      * @return Task and status or error and status
      */
-    @GetMapping
-    public ResponseEntity<?> getTask(@RequestParam String id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getTask(@PathVariable("id") Long id) {
         // Проверить id
         // Найти в БД
         return new ResponseEntity<>(HttpStatus.OK);

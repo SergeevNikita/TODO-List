@@ -8,10 +8,12 @@ import lombok.Setter;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 /**
- * TodoList model
+ * TaskList model
  *
  * @author Sergeev Nikita
  * @version 1.0
@@ -21,7 +23,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TodoList {
+public class TaskList {
     /**
      * ID
      */
@@ -39,6 +41,8 @@ public class TodoList {
     /**
      * Название списка
      */
+    @NotNull
+    @Size(min = 1, max = 30)
     private String name;
     /**
      * Состояние (завершено или нет)
@@ -49,6 +53,7 @@ public class TodoList {
      * Количество завершенных Task
      */
     private Long numberOfCompletedTask;
+
     /* Список дел (нужно ли?) */
-    //List<Task> todoList;
+    //List<Task> taskList;
 }

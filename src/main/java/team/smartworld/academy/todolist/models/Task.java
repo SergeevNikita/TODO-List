@@ -8,6 +8,10 @@ import lombok.Setter;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 /**
@@ -44,14 +48,20 @@ public class Task {
     /**
      * Название дела
      */
+    @NotNull
+    @Size(min = 1, max = 30)
     private String name;
     /**
      * Краткое описание title
      */
+    @NotNull
+    @Size(max = 255)
     private String title;
     /**
      * Срочность 1-5
      */
+    @Min(1)
+    @Max(5)
     private byte priority;
     /**
      * Состояние (сделано или нет)

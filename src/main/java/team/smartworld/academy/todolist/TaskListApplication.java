@@ -18,7 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @SpringBootApplication
 @EnableSwagger2
-public class TodoListApplication {
+public class TaskListApplication {
 
     /**
      * Main method from start server
@@ -26,7 +26,7 @@ public class TodoListApplication {
      * @param args arguments
      */
     public static void main(String[] args) {
-        SpringApplication.run(TodoListApplication.class, args);
+        SpringApplication.run(TaskListApplication.class, args);
     }
 
     /**
@@ -43,7 +43,7 @@ public class TodoListApplication {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("team.smartworld.academy.todolist"))
                 .paths(PathSelectors.any())
                 .build();
     }

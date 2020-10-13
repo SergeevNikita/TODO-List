@@ -11,6 +11,7 @@ import team.smartworld.academy.todolist.repository.TaskListRepository;
 import team.smartworld.academy.todolist.repository.TaskRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +34,8 @@ public class TaskController {
     private final TaskListRepository taskListRepository;
 
     /**
-     * @param taskRepository TaskList repository
+     * @param taskRepository     Task repository
+     * @param taskListRepository TaskList repository
      */
     @Autowired
     public TaskController(TaskRepository taskRepository, TaskListRepository taskListRepository) {
@@ -44,6 +46,7 @@ public class TaskController {
     /**
      * Method for deleting Task in TodoList.
      *
+     * @param taskListId TaskList id
      * @param id is the id of the Task to delete in DB
      */
     @DeleteMapping("/{taskListId}/task/{id}")
@@ -174,8 +177,9 @@ public class TaskController {
             task.setPriority(Byte.parseByte(newTask.get("priority")));
             task.setDateCreated(LocalDateTime.now());
             task.setDateChange(LocalDateTime.now());
-
-            return new ResponseEntity<>(taskRepository.save(task), HttpStatus.CREATED);
+            Map<String, String> createdTaskId = new HashMap<>();
+            createdTaskId.put("id", Long.toString(taskRepository.save(task).getId()));
+            return new ResponseEntity<>(createdTaskId, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

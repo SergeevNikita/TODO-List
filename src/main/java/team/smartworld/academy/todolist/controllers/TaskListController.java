@@ -84,25 +84,6 @@ public class TaskListController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-    /**
-     * Method for create TaskList
-     *
-     * @param newNameTaskList new TaskList date
-     * @return TaskList and status or error and status
-     */
-    @PostMapping
-    public ResponseEntity<?> newTaskList(@RequestBody Map<String, String> newNameTaskList) {
-        // Проверки
-        // Создание и сохранение в БД
-        TaskList list = new TaskList();
-        list.setName(newNameTaskList.get("name").replaceAll("[^A-Za-zА-Яа-я0-9]", ""));
-        list.setDateCreated(LocalDateTime.now());
-        list.setDateChange(LocalDateTime.now());
-        // Больше данных !!!
-        return new ResponseEntity<>(repository.save(list), HttpStatus.CREATED);
-    }
-
     /**
      * Method for getting all TaskLists
      *
@@ -152,5 +133,32 @@ public class TaskListController {
             }
         }
         return new ResponseEntity<>(taskListDate, HttpStatus.OK);
+    }
+
+    /**
+     * Method for create TaskList
+     *
+     * @param newNameTaskList new TaskList date
+     * @return TaskList and status or error and status
+     */
+    @PostMapping
+    public ResponseEntity<?> newTaskList(@RequestBody Map<String, String> newNameTaskList) {
+        // Проверки
+        // Создание и сохранение в БД
+        if (newNameTaskList.containsKey("name")) {
+            TaskList taskList = getNewTaskList(newNameTaskList);
+            Map<String, String> createdTaskListId = new HashMap<>();
+            createdTaskListId.put("id", Long.toString(repository.save(taskList).getId()));
+            return new ResponseEntity<>(createdTaskListId, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    }
+
+    private static TaskList getNewTaskList(Map<String, String> newNameTaskList) {
+        TaskList taskList = new TaskList();
+        taskList.setName(newNameTaskList.get("name").replaceAll("[^A-Za-zА-Яа-я0-9]", ""));
+        taskList.setDateCreated(LocalDateTime.now());
+        taskList.setDateChange(LocalDateTime.now());
+        return taskList;
     }
 }

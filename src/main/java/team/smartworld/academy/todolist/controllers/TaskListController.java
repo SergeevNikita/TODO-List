@@ -1,11 +1,15 @@
 package team.smartworld.academy.todolist.controllers;
 
 import io.swagger.annotations.Api;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import team.smartworld.academy.todolist.entity.TaskList;
+import team.smartworld.academy.todolist.repository.TaskListRepository;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Task List controller
@@ -15,9 +19,22 @@ import java.util.Map;
  */
 
 @RestController
-@RequestMapping(value = "/todo/api/todolist")
+@RequestMapping(value = "/todo/api/taskList")
 @Api(value = "Task List Controller", consumes = "json", produces = "json")
 public class TaskListController {
+
+    /**
+     *
+     */
+    private final TaskListRepository repository;
+
+    /**
+     * @param repository TaskList repository
+     */
+    @Autowired
+    public TaskListController(TaskListRepository repository) {
+        this.repository = repository;
+    }
 
     /**
      * Method for deleting TaskList.
@@ -28,7 +45,7 @@ public class TaskListController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTaskList(@PathVariable("id") Long id) {
         //добавить проверки ID
-        //  repository.deleteById(id);
+          repository.deleteById(id);
     }
 
     /**
@@ -41,7 +58,7 @@ public class TaskListController {
     public ResponseEntity<?> getTaskList(@PathVariable("id") Long id) {
         // Проверки
         // Поиск в БД
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(repository.findById(id), HttpStatus.OK);
     }
 
     /**
@@ -55,7 +72,15 @@ public class TaskListController {
     public ResponseEntity<?> renameTaskList(@PathVariable("id") Long id,
                                             @RequestBody Map<String, String> newName) {
         // Проверки
-        return new ResponseEntity<>(HttpStatus.OK);
+        Optional<TaskList> list = repository.findById(id);
+        if (list.isPresent()) {
+            TaskList taskList = list.get();
+            taskList.setName(newName.get("name"));
+            return new ResponseEntity<>(repository.save(taskList), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+//        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -68,24 +93,30 @@ public class TaskListController {
     public ResponseEntity<?> newTaskList(@RequestBody Map<String, String> newNameTaskList) {
         // Проверки
         // Создание и сохранение в БД
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        TaskList list = new TaskList();
+        list.setName(newNameTaskList.get("name"));
+        // Больше данных !!!
+        return new ResponseEntity<>(repository.save(list), HttpStatus.CREATED);
     }
 
     /**
      * Method for getting all TaskLists
      *
-     * @param startId             start id search
-     * @param limit               limit getting TaskList
      * @param sortAndFilterParams params sorted and filters
      * @return all TaskList and status or error and status
      */
 
     // Подумать... переделать.
-    @GetMapping("all")
-    public ResponseEntity<?> getAllTaskLists(@RequestParam(value = "startId", defaultValue = "1") String startId,
-                                             @RequestParam(value = "limit", defaultValue = "10") String limit,
-                                             @RequestBody Map<String, String> sortAndFilterParams) {
+    @GetMapping
+    public ResponseEntity<?> getAllTaskLists(@RequestBody Map<String, String> sortAndFilterParams) {
         // Проверки и прочее.
+        Long startId = 1L;
+        startId = Long.parseLong(sortAndFilterParams.get("startId"));
+        int limit = Integer.parseInt(sortAndFilterParams.get("limit"));
+        if (limit > 100 || limit < 1) {
+            limit = 10;
+        }
+        // Реализовать!
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -4,7 +4,7 @@ import io.swagger.annotations.Api;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team.smartworld.academy.todolist.models.Task;
+import team.smartworld.academy.todolist.entity.Task;
 
 /**
  * Task controller
@@ -13,20 +13,34 @@ import team.smartworld.academy.todolist.models.Task;
  * @version 1.0
  */
 @RestController
-@RequestMapping(value = "/todo/api/task")
+@RequestMapping(value = "/todo/api/taskList")
 @Api(value = "Task Controller", consumes = "json", produces = "json")
 public class TaskController {
+
+    /**
+     *
+     */
+    //private final TaskListRepository repository;
+
+    /**
+     * @param repository TaskList repository
+     */
+//    @Autowired
+//    public TaskController(TaskListRepository repository) {
+//        this.repository = repository;
+//    }
 
     /**
      * Method for deleting Task in TodoList.
      *
      * @param id is the id of the Task to delete in DB
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{taskListId}/task/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTask(@PathVariable("id") Long id) {
+    public void deleteTask(@PathVariable("taskListId") Long taskListId,
+                           @PathVariable("id") Long id) {
         // добавить проверки ID
-        //  repository.deleteById(id);
+        //repository.deleteById(id);
     }
 
     /**
@@ -38,8 +52,9 @@ public class TaskController {
      */
 
     // Разобраться со статусами http ответов для всех методов...
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> markDoneTask(@PathVariable("id") Long id) {
+    @PatchMapping("/{taskListId}/task/{id}")
+    public ResponseEntity<?> markDoneTask(@PathVariable("taskListId") Long taskListId,
+                                          @PathVariable("id") Long id) {
 //        try {
 //                поиск в базе
 //        }
@@ -58,8 +73,9 @@ public class TaskController {
      * @param changeTask changed Task date
      * @return status or error type end status
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<?> changeTask(@PathVariable("id") Long id,
+    @PutMapping("/{taskListId}/task/{id}")
+    public ResponseEntity<?> changeTask(@PathVariable("taskListId") Long taskListId,
+                                        @PathVariable("id") Long id,
                                         @RequestBody Task changeTask) {
         // Проверки
         // изменение
@@ -72,8 +88,9 @@ public class TaskController {
      * @param newTask new Task Date
      * @return Task and status or error and status
      */
-    @PostMapping
-    public ResponseEntity<?> newTask(@RequestBody Task newTask) {
+    @PostMapping("/{taskListId}/task")
+    public ResponseEntity<?> newTask(@PathVariable("taskListId") Long taskListId,
+                                     @RequestBody Task newTask) {
         // Проверки
         // создание и сохранение в БД
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -85,8 +102,9 @@ public class TaskController {
      * @param id is the id for search Task in DB
      * @return Task and status or error and status
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getTask(@PathVariable("id") Long id) {
+    @GetMapping("/{taskListId}/task/{id}")
+    public ResponseEntity<?> getTask(@PathVariable("taskListId") Long taskListId,
+                                     @PathVariable("id") Long id) {
         // Проверить id
         // Найти в БД
         return new ResponseEntity<>(HttpStatus.OK);

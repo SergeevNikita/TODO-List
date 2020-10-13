@@ -1,18 +1,13 @@
-package team.smartworld.academy.todolist.models;
+package team.smartworld.academy.todolist.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
 
 /**
  * Task model
@@ -20,31 +15,34 @@ import java.util.Date;
  * @author Sergeev Nikita
  * @version 1.0
  */
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Entity
+@Data
 public class Task {
 
     /**
      * ID
      */
+    @JsonIgnore
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     /**
      * id списка дел к которому принадлежит (подумать как реализовать связь)
      */
-    private Long idTodoList;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private TaskList taskList;
     /**
      * Дата создания
      */
-    private Date dateCreated;
+    @JsonIgnore
+    private String dateCreated;
     /**
      * Дата изменения
      */
-    private Date dateChange;
+    @JsonIgnore
+    private String dateChange;
     /**
      * Название дела
      */
@@ -66,5 +64,7 @@ public class Task {
     /**
      * Состояние (сделано или нет)
      */
+    @JsonIgnore
     private boolean isDone;
+
 }

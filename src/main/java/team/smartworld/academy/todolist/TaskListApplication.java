@@ -11,7 +11,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Main class TodoList Application
- * SwaggerUI URL: See <a href=http://localhost:8080/swagger-ui.html>SwaggerUI</a>
+ * SwaggerUI URL: See <a href=http://localhost:8080/swagger-ui/>SwaggerUI</a>
  *
  * @author Sergeev Nikita
  * @version 1.0
@@ -38,7 +38,7 @@ public class TaskListApplication {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("team.smartworld.academy.todolist"))
+                .apis(RequestHandlerSelectors.basePackage("team.smartworld.academy.todolist.controllers"))
                 .paths(PathSelectors.any())
                 .build();
     }

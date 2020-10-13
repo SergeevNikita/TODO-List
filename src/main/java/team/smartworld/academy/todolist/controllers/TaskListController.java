@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import team.smartworld.academy.todolist.entity.TaskList;
 import team.smartworld.academy.todolist.repository.TaskListRepository;
 
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * Task List controller
@@ -44,7 +44,6 @@ public class TaskListController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTaskList(@PathVariable("id") Long id) {
-        //добавить проверки ID
           repository.deleteById(id);
     }
 
@@ -56,9 +55,12 @@ public class TaskListController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<?> getTaskList(@PathVariable("id") Long id) {
-        // Проверки
-        // Поиск в БД
-        return new ResponseEntity<>(repository.findById(id), HttpStatus.OK);
+        Optional<TaskList> oTaskList = repository.findById(id);
+        if (oTaskList.isPresent()) {
+            return new ResponseEntity<>(repository.findById(id), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
@@ -75,12 +77,12 @@ public class TaskListController {
         Optional<TaskList> list = repository.findById(id);
         if (list.isPresent()) {
             TaskList taskList = list.get();
-            taskList.setName(newName.get("name"));
+            taskList.setName(newName.get("name").replaceAll("[^A-Za-zА-Яа-я0-9 ]", ""));
+            taskList.setDateChange(LocalDateTime.now());
             return new ResponseEntity<>(repository.save(taskList), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-//        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -94,7 +96,9 @@ public class TaskListController {
         // Проверки
         // Создание и сохранение в БД
         TaskList list = new TaskList();
-        list.setName(newNameTaskList.get("name"));
+        list.setName(newNameTaskList.get("name").replaceAll("[^A-Za-zА-Яа-я0-9]", ""));
+        list.setDateCreated(LocalDateTime.now());
+        list.setDateChange(LocalDateTime.now());
         // Больше данных !!!
         return new ResponseEntity<>(repository.save(list), HttpStatus.CREATED);
     }
@@ -102,21 +106,51 @@ public class TaskListController {
     /**
      * Method for getting all TaskLists
      *
-     * @param sortAndFilterParams params sorted and filters
+     * @param params params sorted and filters
      * @return all TaskList and status or error and status
      */
 
     // Подумать... переделать.
     @GetMapping
-    public ResponseEntity<?> getAllTaskLists(@RequestBody Map<String, String> sortAndFilterParams) {
+    public ResponseEntity<?> getAllTaskLists(@RequestBody Map<String, String> params) {
         // Проверки и прочее.
-        Long startId = 1L;
-        startId = Long.parseLong(sortAndFilterParams.get("startId"));
-        int limit = Integer.parseInt(sortAndFilterParams.get("limit"));
-        if (limit > 100 || limit < 1) {
-            limit = 10;
+        long startId = 1L;
+        if (params.containsKey("startId")) {
+            long parseStartId = Long.parseLong(params.get("startId"));
+            if (parseStartId > 0L) {
+                startId = parseStartId;
+            }
         }
-        // Реализовать!
-        return new ResponseEntity<>(HttpStatus.OK);
+        int limit = 10;
+        if (params.containsKey("limit")) {
+            int parseLimit = Integer.parseInt(params.get("limit"));
+            if (parseLimit > 0 && parseLimit < 100) {
+                limit = parseLimit;
+            }
+        }
+        //startId = Long.parseLong(sortAndFilterParams.get("startId"));
+        // = Integer.parseInt(sortAndFilterParams.get("limit"));
+//        if (limit > 100 || limit < 1) {
+//            limit = 10;
+//        }
+
+        Iterable<TaskList> oTaskList = repository.findAll();
+        Iterator<TaskList> listIterator = oTaskList.iterator();
+        List<Map<String, String>> taskListDate = new ArrayList<>();
+
+        while (listIterator.hasNext() && limit > 0) {
+            TaskList taskList = listIterator.next();
+            if (taskList.getId() >= startId) {
+                Map<String, String> dataMap = new HashMap<>();
+                dataMap.put("id", Long.toString(taskList.getId()));
+                dataMap.put("name", taskList.getName());
+                dataMap.put("dateCreated", taskList.getDateCreated().toString());
+                dataMap.put("dateChange", taskList.getDateChange().toString());
+                dataMap.put("isDone", Boolean.toString(taskList.isDone()));
+                taskListDate.add(dataMap);
+                limit--;
+            }
+        }
+        return new ResponseEntity<>(taskListDate, HttpStatus.OK);
     }
 }

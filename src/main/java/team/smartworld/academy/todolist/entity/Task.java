@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 /**
  * Task model
@@ -22,27 +21,28 @@ public class Task {
     /**
      * ID
      */
-    @JsonIgnore
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     /**
      * id списка дел к которому принадлежит (подумать как реализовать связь)
      */
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(nullable = false)
+    @JsonIgnore
     private TaskList taskList;
     /**
      * Дата создания
      */
-    @JsonIgnore
-    private String dateCreated;
+
+    private LocalDateTime dateCreated;
     /**
      * Дата изменения
      */
-    @JsonIgnore
-    private String dateChange;
+
+    private LocalDateTime dateChange;
     /**
      * Название дела
      */
@@ -58,13 +58,11 @@ public class Task {
     /**
      * Срочность 1-5
      */
-    @Min(1)
-    @Max(5)
     private byte priority;
     /**
      * Состояние (сделано или нет)
      */
-    @JsonIgnore
+
     private boolean isDone;
 
 }

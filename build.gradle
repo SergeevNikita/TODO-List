@@ -25,6 +25,8 @@ dependencies {
 //	implementation group: 'io.springfox', name: 'springfox-data-rest', version: '3.0.0'
 	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
 
+	//implementation ('com.fasterxml.jackson.datatype:jackson-datatype-hibernate5')
+
 //	implementation 'org.liquibase:liquibase-core'
 	runtimeOnly 'org.postgresql:postgresql'
     compileOnly 'org.projectlombok:lombok'

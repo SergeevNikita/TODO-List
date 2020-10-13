@@ -1,10 +1,19 @@
 package team.smartworld.academy.todolist.controllers;
 
 import io.swagger.annotations.Api;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.smartworld.academy.todolist.entity.Task;
+import team.smartworld.academy.todolist.entity.TaskList;
+import team.smartworld.academy.todolist.repository.TaskListRepository;
+import team.smartworld.academy.todolist.repository.TaskRepository;
+
+import java.time.LocalDateTime;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Task controller
@@ -20,15 +29,17 @@ public class TaskController {
     /**
      *
      */
-    //private final TaskListRepository repository;
+    private final TaskRepository taskRepository;
+    private final TaskListRepository taskListRepository;
 
     /**
-     * @param repository TaskList repository
+     * @param taskRepository TaskList repository
      */
-//    @Autowired
-//    public TaskController(TaskListRepository repository) {
-//        this.repository = repository;
-//    }
+    @Autowired
+    public TaskController(TaskRepository taskRepository, TaskListRepository taskListRepository) {
+        this.taskRepository = taskRepository;
+        this.taskListRepository = taskListRepository;
+    }
 
     /**
      * Method for deleting Task in TodoList.
@@ -40,7 +51,26 @@ public class TaskController {
     public void deleteTask(@PathVariable("taskListId") Long taskListId,
                            @PathVariable("id") Long id) {
         // добавить проверки ID
-        //repository.deleteById(id);
+//        Optional<TaskList> oTaskList = repository.findById(taskListId);
+//        if (oTaskList.isPresent()) {
+//            TaskList taskList = oTaskList.get();
+//            List<Task> list = taskList.getTasks();
+//            int i = 0;
+//            for (; i < list.size(); i++) {
+//                if (list.get(i).getId().equals(id)) {
+//                    list.remove(i);
+//                }
+//            }
+//        }
+
+        Optional<Task> oTask = taskRepository.findById(id);
+        if (oTask.isPresent()) {
+            Task task = oTask.get();
+            if (task.getTaskList().getId().equals(taskListId)) {
+                taskRepository.delete(task);
+            }
+        }
+
     }
 
     /**
@@ -51,20 +81,22 @@ public class TaskController {
      * @return status or error type end status
      */
 
-    // Разобраться со статусами http ответов для всех методов...
+
     @PatchMapping("/{taskListId}/task/{id}")
     public ResponseEntity<?> markDoneTask(@PathVariable("taskListId") Long taskListId,
                                           @PathVariable("id") Long id) {
-//        try {
-//                поиск в базе
-//        }
-//        catch() { return ошибка не число и статус http}
-//        catch() { return ошибка не найдено в базе и статус http}
-//        установка isDone(true);
-        return new ResponseEntity<>(HttpStatus.OK); //
+
+        Optional<Task> oTask = taskRepository.findById(id);
+        if (oTask.isPresent()) {
+            Task task = oTask.get();
+            if (task.getTaskList().getId().equals(taskListId)) {
+                task.setDone(true);
+                return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-//    public ResponseEntity<?> markDoneTask(@RequestBody Map<String, String> map) {
 
     /**
      * Method for change in Task.
@@ -76,10 +108,33 @@ public class TaskController {
     @PutMapping("/{taskListId}/task/{id}")
     public ResponseEntity<?> changeTask(@PathVariable("taskListId") Long taskListId,
                                         @PathVariable("id") Long id,
-                                        @RequestBody Task changeTask) {
+                                        @RequestBody Map<String, String> changeTask) {
         // Проверки
         // изменение
-        return new ResponseEntity<>(HttpStatus.OK);
+        Optional<Task> oTask = taskRepository.findById(id);
+        if (oTask.isPresent()) {
+            Task task = oTask.get();
+            if (task.getTaskList().getId().equals(taskListId)) {
+                if (changeTask.containsKey("isDone")) {
+                    task.setDone(Boolean.parseBoolean(changeTask.get("isDone")));
+                }
+                if (changeTask.containsKey("name")) {
+                    task.setName(changeTask.get("name").replaceAll("[^A-Za-zА-Яа-я0-9 ]", ""));
+                }
+                if (changeTask.containsKey("title")) {
+                    task.setTitle(changeTask.get("title").replaceAll("[^A-Za-zА-Яа-я0-9 ]", ""));
+                }
+                if (changeTask.containsKey("priority")) {
+                    task.setPriority(Byte.parseByte(changeTask.get("priority")));
+                }
+                return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // не верно указан список
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // не найден Task
+        }
+
     }
 
     /**
@@ -90,10 +145,39 @@ public class TaskController {
      */
     @PostMapping("/{taskListId}/task")
     public ResponseEntity<?> newTask(@PathVariable("taskListId") Long taskListId,
-                                     @RequestBody Task newTask) {
+                                     @RequestBody Map<String, String> newTask) {
         // Проверки
         // создание и сохранение в БД
-        return new ResponseEntity<>(HttpStatus.CREATED);
+//        Optional<TaskList> taskList = repository.findById(taskListId);
+//        if (taskList.isPresent()) {
+//            Task task = new Task();
+//            TaskList list = taskList.get();
+//            task.setTaskList(list);
+//            task.setName(newTask.get("name"));
+//            task.setTitle(newTask.get("title"));
+//            task.setPriority(Byte.parseByte(newTask.get("priority")));
+//            task.setDateCreated(LocalDateTime.now());
+//            task.setDateChange(LocalDateTime.now());
+//            list.getTasks().add(task);
+////            repository.save(list);
+//            return new ResponseEntity<>(repository.save(list), HttpStatus.CREATED);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+        Optional<TaskList> oTaskList = taskListRepository.findById(taskListId);
+        if (oTaskList.isPresent()) {
+            TaskList taskList = oTaskList.get();
+            Task task = new Task();
+            task.setTaskList(taskList);
+            task.setName(newTask.get("name").replaceAll("[^A-Za-zА-Яа-я0-9 ]", ""));
+            task.setTitle(newTask.get("title").replaceAll("[^A-Za-zА-Яа-я0-9 ]", ""));
+            task.setPriority(Byte.parseByte(newTask.get("priority")));
+            task.setDateCreated(LocalDateTime.now());
+            task.setDateChange(LocalDateTime.now());
+
+            return new ResponseEntity<>(taskRepository.save(task), HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -107,6 +191,28 @@ public class TaskController {
                                      @PathVariable("id") Long id) {
         // Проверить id
         // Найти в БД
-        return new ResponseEntity<>(HttpStatus.OK);
+//        Optional<TaskList> oTaskList = repository.findById(taskListId);
+//
+//        if (oTaskList.isPresent()) {
+//            TaskList taskList = oTaskList.get();
+//            List<Task> list = taskList.getTasks();
+//            for (Task task : list) {
+//                if (task.getId().equals(id)) {
+//                    return new ResponseEntity<>(task, HttpStatus.OK);
+//                }
+//            }
+//        }
+//        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Optional<Task> oTasks = taskRepository.findById(id);
+        if (oTasks.isPresent()) {
+            Iterator<Task> iterator = oTasks.stream().iterator();
+            while (iterator.hasNext()) {
+                Task task = iterator.next();
+                if (task.getTaskList().getId().equals(taskListId)) {
+                    return new ResponseEntity<>(task, HttpStatus.OK);
+                }
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

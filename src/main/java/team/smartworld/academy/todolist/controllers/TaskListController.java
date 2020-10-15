@@ -109,11 +109,6 @@ public class TaskListController {
                 limit = parseLimit;
             }
         }
-        //startId = Long.parseLong(sortAndFilterParams.get("startId"));
-        // = Integer.parseInt(sortAndFilterParams.get("limit"));
-//        if (limit > 100 || limit < 1) {
-//            limit = 10;
-//        }
 
         Iterable<TaskList> oTaskList = repository.findAll();
         Iterator<TaskList> listIterator = oTaskList.iterator();
@@ -146,19 +141,14 @@ public class TaskListController {
         // Проверки
         // Создание и сохранение в БД
         if (newNameTaskList.containsKey("name")) {
-            TaskList taskList = getNewTaskList(newNameTaskList);
-            Map<String, String> createdTaskListId = new HashMap<>();
-            createdTaskListId.put("id", Long.toString(repository.save(taskList).getId()));
+            TaskList taskList = new TaskList();
+            taskList.setName(newNameTaskList.get("name").replaceAll("[^A-Za-zА-Яа-я0-9]", ""));
+            taskList.setDateCreated(LocalDateTime.now());
+            taskList.setDateChange(LocalDateTime.now());
+            String createdTaskListId = "{ \"id\": \"" + repository.save(taskList).getId() + "\" }";
             return new ResponseEntity<>(createdTaskListId, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
-    private static TaskList getNewTaskList(Map<String, String> newNameTaskList) {
-        TaskList taskList = new TaskList();
-        taskList.setName(newNameTaskList.get("name").replaceAll("[^A-Za-zА-Яа-я0-9]", ""));
-        taskList.setDateCreated(LocalDateTime.now());
-        taskList.setDateChange(LocalDateTime.now());
-        return taskList;
-    }
 }

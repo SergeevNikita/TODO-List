@@ -11,7 +11,6 @@ import team.smartworld.academy.todolist.repository.TaskListRepository;
 import team.smartworld.academy.todolist.repository.TaskRepository;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
@@ -54,18 +53,6 @@ public class TaskController {
     public void deleteTask(@PathVariable("taskListId") Long taskListId,
                            @PathVariable("id") Long id) {
         // добавить проверки ID
-//        Optional<TaskList> oTaskList = repository.findById(taskListId);
-//        if (oTaskList.isPresent()) {
-//            TaskList taskList = oTaskList.get();
-//            List<Task> list = taskList.getTasks();
-//            int i = 0;
-//            for (; i < list.size(); i++) {
-//                if (list.get(i).getId().equals(id)) {
-//                    list.remove(i);
-//                }
-//            }
-//        }
-
         Optional<Task> oTask = taskRepository.findById(id);
         if (oTask.isPresent()) {
             Task task = oTask.get();
@@ -151,22 +138,6 @@ public class TaskController {
                                      @RequestBody Map<String, String> newTask) {
         // Проверки
         // создание и сохранение в БД
-//        Optional<TaskList> taskList = repository.findById(taskListId);
-//        if (taskList.isPresent()) {
-//            Task task = new Task();
-//            TaskList list = taskList.get();
-//            task.setTaskList(list);
-//            task.setName(newTask.get("name"));
-//            task.setTitle(newTask.get("title"));
-//            task.setPriority(Byte.parseByte(newTask.get("priority")));
-//            task.setDateCreated(LocalDateTime.now());
-//            task.setDateChange(LocalDateTime.now());
-//            list.getTasks().add(task);
-////            repository.save(list);
-//            return new ResponseEntity<>(repository.save(list), HttpStatus.CREATED);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
         Optional<TaskList> oTaskList = taskListRepository.findById(taskListId);
         if (oTaskList.isPresent()) {
             TaskList taskList = oTaskList.get();
@@ -177,8 +148,7 @@ public class TaskController {
             task.setPriority(Byte.parseByte(newTask.get("priority")));
             task.setDateCreated(LocalDateTime.now());
             task.setDateChange(LocalDateTime.now());
-            Map<String, String> createdTaskId = new HashMap<>();
-            createdTaskId.put("id", Long.toString(taskRepository.save(task).getId()));
+            String createdTaskId = "{ \"id\": \"" + taskRepository.save(task).getId() + "\" }";
             return new ResponseEntity<>(createdTaskId, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -195,18 +165,6 @@ public class TaskController {
                                      @PathVariable("id") Long id) {
         // Проверить id
         // Найти в БД
-//        Optional<TaskList> oTaskList = repository.findById(taskListId);
-//
-//        if (oTaskList.isPresent()) {
-//            TaskList taskList = oTaskList.get();
-//            List<Task> list = taskList.getTasks();
-//            for (Task task : list) {
-//                if (task.getId().equals(id)) {
-//                    return new ResponseEntity<>(task, HttpStatus.OK);
-//                }
-//            }
-//        }
-//        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         Optional<Task> oTasks = taskRepository.findById(id);
         if (oTasks.isPresent()) {
             Iterator<Task> iterator = oTasks.stream().iterator();

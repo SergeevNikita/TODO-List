@@ -6,5 +6,13 @@
 
     <include file="db/changelog/changelog-task.xml"/>
     <include file="db/changelog/changelog-tasklist.xml"/>
+    <include file="db/changelog/data/changelog-fill-with-data-tasklist.xml"/>
+    <include file="db/changelog/data/changelog-fill-with-data-tasklist-1.xml"/>
+    <include file="db/changelog/data/changelog-fill-with-data-tasklist-2.xml"/>
+    <include file="db/changelog/data/changelog-fill-with-data-tasklist-3.xml"/>
+    <include file="db/changelog/data/changelog-fill-with-data-tasklist-6.xml"/>
+    <include file="db/changelog/data/changelog-fill-with-data-tasklist-9.xml"/>
+    <include file="db/changelog/data/changelog-fill-with-data-tasklist-12.xml"/>
+    <include file="db/changelog/data/changelog-fill-with-data-tasklist-15.xml"/>
 
 </databaseChangeLog>

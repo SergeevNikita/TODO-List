@@ -1,0 +1,115 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet author="nik" id="100">
+        <insert tableName="task_list">
+            <column name="name" value="task list 1"/>
+            <column name="date_change" valueDate="2020-10-17T12:36:17.070346"/>
+            <column name="date_created" valueDate="2020-10-17T12:36:17.070270"/>
+            <column name="is_done" valueBoolean="false"/>
+            <column name="number_of_completed_task" valueNumeric="4"/>
+        </insert>
+        <insert tableName="task_list">
+            <column name="name" value="task list 2"/>
+            <column name="date_change" valueDate="2020-10-17T12:36:17.070270"/>
+            <column name="date_created" valueDate="2020-10-17T11:36:17.070270"/>
+            <column name="is_done" valueBoolean="false"/>
+            <column name="number_of_completed_task" valueNumeric="2"/>
+        </insert>
+        <insert tableName="task_list">
+            <column name="name" value="task list 3"/>
+            <column name="date_change" valueDate="2020-10-16T12:37:17.070270"/>
+            <column name="date_created" valueDate="2020-10-16T12:37:17.070270"/>
+            <column name="is_done" valueBoolean="true"/>
+            <column name="number_of_completed_task" valueNumeric="3"/>
+        </insert>
+        <insert tableName="task_list">
+            <column name="name" value="task list 4"/>
+            <column name="date_change" valueDate="2020-10-17T12:36:17.070346"/>
+            <column name="date_created" valueDate="2020-10-17T12:36:17.070270"/>
+            <column name="is_done" valueBoolean="false"/>
+            <column name="number_of_completed_task" valueNumeric="0"/>
+        </insert>
+        <insert tableName="task_list">
+            <column name="name" value="task list 5"/>
+            <column name="date_change" valueDate="2020-10-17T12:36:17.070270"/>
+            <column name="date_created" valueDate="2020-10-17T11:36:17.070270"/>
+            <column name="is_done" valueBoolean="false"/>
+            <column name="number_of_completed_task" valueNumeric="0"/>
+        </insert>
+        <insert tableName="task_list">
+            <column name="name" value="task list 6"/>
+            <column name="date_change" valueDate="2020-10-16T12:37:17.070270"/>
+            <column name="date_created" valueDate="2020-10-16T12:37:17.070270"/>
+            <column name="is_done" valueBoolean="true"/>
+            <column name="number_of_completed_task" valueNumeric="1"/>
+        </insert>
+        <insert tableName="task_list">
+            <column name="name" value="task list 7"/>
+            <column name="date_change" valueDate="2020-10-17T12:36:17.070346"/>
+            <column name="date_created" valueDate="2020-10-17T12:36:17.070270"/>
+            <column name="is_done" valueBoolean="false"/>
+            <column name="number_of_completed_task" valueNumeric="0"/>
+        </insert>
+        <insert tableName="task_list">
+            <column name="name" value="task list 8"/>
+            <column name="date_change" valueDate="2020-10-17T12:36:17.070270"/>
+            <column name="date_created" valueDate="2020-10-17T11:36:17.070270"/>
+            <column name="is_done" valueBoolean="false"/>
+            <column name="number_of_completed_task" valueNumeric="0"/>
+        </insert>
+        <insert tableName="task_list">
+            <column name="name" value="task list 9"/>
+            <column name="date_change" valueDate="2020-10-16T12:37:17.070270"/>
+            <column name="date_created" valueDate="2020-10-16T12:37:17.070270"/>
+            <column name="is_done" valueBoolean="true"/>
+            <column name="number_of_completed_task" valueNumeric="1"/>
+        </insert>
+        <insert tableName="task_list">
+            <column name="name" value="task list 10"/>
+            <column name="date_change" valueDate="2020-10-17T12:36:17.070346"/>
+            <column name="date_created" valueDate="2020-10-17T12:36:17.070270"/>
+            <column name="is_done" valueBoolean="false"/>
+            <column name="number_of_completed_task" valueNumeric="0"/>
+        </insert>
+        <insert tableName="task_list">
+            <column name="name" value="task list 11"/>
+            <column name="date_change" valueDate="2020-10-17T12:36:17.070270"/>
+            <column name="date_created" valueDate="2020-10-17T11:36:17.070270"/>
+            <column name="is_done" valueBoolean="false"/>
+            <column name="number_of_completed_task" valueNumeric="0"/>
+        </insert>
+        <insert tableName="task_list">
+            <column name="name" value="task list 12"/>
+            <column name="date_change" valueDate="2020-10-16T12:37:17.070270"/>
+            <column name="date_created" valueDate="2020-10-16T12:37:17.070270"/>
+            <column name="is_done" valueBoolean="true"/>
+            <column name="number_of_completed_task" valueNumeric="1"/>
+        </insert>
+        <insert tableName="task_list">
+            <column name="name" value="task list 13"/>
+            <column name="date_change" valueDate="2020-10-17T12:36:17.070346"/>
+            <column name="date_created" valueDate="2020-10-17T12:36:17.070270"/>
+            <column name="is_done" valueBoolean="false"/>
+            <column name="number_of_completed_task" valueNumeric="0"/>
+        </insert>
+        <insert tableName="task_list">
+            <column name="name" value="task list 14"/>
+            <column name="date_change" valueDate="2020-10-17T12:36:17.070270"/>
+            <column name="date_created" valueDate="2020-10-17T11:36:17.070270"/>
+            <column name="is_done" valueBoolean="false"/>
+            <column name="number_of_completed_task" valueNumeric="0"/>
+        </insert>
+        <insert tableName="task_list">
+            <column name="name" value="task list 15"/>
+            <column name="date_change" valueDate="2020-10-16T12:37:17.070270"/>
+            <column name="date_created" valueDate="2020-10-16T12:37:17.070270"/>
+            <column name="is_done" valueBoolean="true"/>
+            <column name="number_of_completed_task" valueNumeric="1"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

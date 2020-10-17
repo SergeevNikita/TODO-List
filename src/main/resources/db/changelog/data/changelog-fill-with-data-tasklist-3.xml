@@ -1,0 +1,54 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet author="nik" id="103">
+        <insert tableName="task">
+            <column name="name" value="list 3 task 1"/>
+            <column name="date_change" valueDate="2020-10-17T12:36:17.070346"/>
+            <column name="date_created" valueDate="2020-10-17T12:36:17.070270"/>
+            <column name="is_done" valueBoolean="true"/>
+            <column name="priority" valueNumeric="2"/>
+            <column name="title" value="title list 3 task 1"/>
+            <column name="task_list_id" value="3"/>
+        </insert>
+        <insert tableName="task">
+            <column name="name" value="list 3 task 2"/>
+            <column name="date_change" valueDate="2020-10-17T12:46:17.070346"/>
+            <column name="date_created" valueDate="2020-10-17T12:46:17.070270"/>
+            <column name="is_done" valueBoolean="true"/>
+            <column name="priority" valueNumeric="5"/>
+            <column name="title" value="title list 3 task 2"/>
+            <column name="task_list_id" value="3"/>
+        </insert>
+        <insert tableName="task">
+            <column name="name" value="list 3 task 3"/>
+            <column name="date_change" valueDate="2020-10-17T12:56:17.070346"/>
+            <column name="date_created" valueDate="2020-10-17T12:56:17.070270"/>
+            <column name="is_done" valueBoolean="true"/>
+            <column name="priority" valueNumeric="1"/>
+            <column name="title" value="title list 3 task 3"/>
+            <column name="task_list_id" value="3"/>
+        </insert>
+        <insert tableName="task">
+            <column name="name" value="list 3 task 4"/>
+            <column name="date_change" valueDate="2020-10-16T12:44:17.070346"/>
+            <column name="date_created" valueDate="2020-10-16T12:40:17.070270"/>
+            <column name="is_done" valueBoolean="true"/>
+            <column name="priority" valueNumeric="2"/>
+            <column name="title" value="title list 3 task 5"/>
+            <column name="task_list_id" value="3"/>
+        </insert>
+        <insert tableName="task">
+            <column name="name" value="list 3 task 5"/>
+            <column name="date_change" valueDate="2020-10-15T12:46:17.070346"/>
+            <column name="date_created" valueDate="2020-10-15T12:46:17.070270"/>
+            <column name="is_done" valueBoolean="true"/>
+            <column name="priority" valueNumeric="4"/>
+            <column name="title" value="title list 3 task 5"/>
+            <column name="task_list_id" value="3"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

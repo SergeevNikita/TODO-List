@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet author="nik" id="2">
+        <createTable tableName="task_list">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="task_list_pkey"/>
+            </column>
+            <column name="date_change" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="date_created" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="is_done" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number_of_completed_task" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="nik" id="3">
+        <addForeignKeyConstraint baseColumnNames="task_list_id" baseTableName="task"
+                                 constraintName="fknoop17o52c1kg73bskj5o4rdx" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION"
+                                 onUpdate="NO ACTION" referencedColumnNames="id"
+                                 referencedTableName="task_list" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.smartworld.academy.todolist.entity.Task;
 import team.smartworld.academy.todolist.entity.TaskList;
+import team.smartworld.academy.todolist.exceptions.*;
 import team.smartworld.academy.todolist.repository.TaskListRepository;
 import team.smartworld.academy.todolist.repository.TaskRepository;
 
@@ -46,20 +47,27 @@ public class TaskController {
      * Method for deleting Task in TodoList.
      *
      * @param taskListId TaskList id
-     * @param id is the id of the Task to delete in DB
+     * @param id         is the id of the Task to delete in DB
      */
     @DeleteMapping("/{taskListId}/task/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable("taskListId") Long taskListId,
-                           @PathVariable("id") Long id) {
+                           @PathVariable("id") Long id)
+            throws TaskNotFoundException,
+            TaskListNotFoundException {
         // добавить проверки ID
         Optional<Task> oTask = taskRepository.findById(id);
         if (oTask.isPresent()) {
             Task task = oTask.get();
             if (task.getTaskList().getId().equals(taskListId)) {
                 taskRepository.delete(task);
+            } else {
+                throw new TaskListNotFoundException();
             }
+        } else {
+            throw new TaskNotFoundException();
         }
+
 
     }
 
@@ -74,55 +82,106 @@ public class TaskController {
 
     @PatchMapping("/{taskListId}/task/{id}")
     public ResponseEntity<?> markDoneTask(@PathVariable("taskListId") Long taskListId,
-                                          @PathVariable("id") Long id) {
+                                          @PathVariable("id") Long id,
+                                          @RequestBody Map<String, String> isDoneMap)
+            throws TaskListBadParameterException,
+            InvalidParameterException,
+            TaskNotFoundException,
+            TaskListNotFoundException {
+        if (!isDoneMap.containsKey("isDone")
+                || isDoneMap.get("isDone").isEmpty()) {
+            throw new TaskListBadParameterException("isDone");
+        }
+        if (!("true".equalsIgnoreCase(isDoneMap.get("isDone")) || "false".equalsIgnoreCase(isDoneMap.get("isDone")))) {
+            throw new InvalidParameterException("isDone");
+        }
 
         Optional<Task> oTask = taskRepository.findById(id);
         if (oTask.isPresent()) {
             Task task = oTask.get();
             if (task.getTaskList().getId().equals(taskListId)) {
-                task.setDone(true);
+                task.setDone(Boolean.parseBoolean(isDoneMap.get("isDone")));
                 return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
+            } else {
+                throw new TaskListNotFoundException();
             }
+        } else {
+            throw new TaskNotFoundException();
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 
     /**
      * Method for change in Task.
      *
-     * @param id         is the id of the Task to change in DB
-     * @param changeTask changed Task date
+     * @param id            is the id of the Task to change in DB
+     * @param changeTaskMap changed Task date
      * @return status or error type end status
      */
+
+    // Переделать всё
     @PutMapping("/{taskListId}/task/{id}")
     public ResponseEntity<?> changeTask(@PathVariable("taskListId") Long taskListId,
                                         @PathVariable("id") Long id,
-                                        @RequestBody Map<String, String> changeTask) {
+                                        @RequestBody Map<String, String> changeTaskMap)
+            throws TaskNotFoundException,
+            TaskListNotFoundException,
+            TaskListBadParameterException,
+            InvalidParameterException,
+            IncorrectParameterValueException {
         // Проверки
+        if ((!changeTaskMap.containsKey("isDone")
+                || changeTaskMap.get("isDone").isEmpty())
+                && (!changeTaskMap.containsKey("name")
+                || changeTaskMap.get("name").isEmpty())
+                && (!changeTaskMap.containsKey("title")
+                || changeTaskMap.get("title").isEmpty())
+                && (!changeTaskMap.containsKey("priority")
+                || changeTaskMap.get("priority").isEmpty())) {
+            throw new TaskListBadParameterException("isDone", "name", "title", "priority");
+        }
+        boolean isDone;
+        if ("true".equalsIgnoreCase(changeTaskMap.get("isDone"))
+                || "false".equalsIgnoreCase(changeTaskMap.get("isDone"))) {
+            isDone = Boolean.parseBoolean(changeTaskMap.get("isDone"));
+        } else {
+            throw new InvalidParameterException("isDone");
+        }
+        int priority;
+        try {
+            priority = Integer.parseInt(changeTaskMap.get("priority"));
+            if (priority < 1 || priority > 5) {
+                throw new IncorrectParameterValueException("priority");
+            }
+        } catch (NumberFormatException e) {
+            throw new InvalidParameterException("priority");
+        }
+        String name = changeTaskMap.get("name").replaceAll("[^A-Za-zА-Яа-я0-9 ]", "");
+        String title = changeTaskMap.get("title").replaceAll("[^A-Za-zА-Яа-я0-9 ]", "");
+
         // изменение
         Optional<Task> oTask = taskRepository.findById(id);
         if (oTask.isPresent()) {
             Task task = oTask.get();
             if (task.getTaskList().getId().equals(taskListId)) {
-                if (changeTask.containsKey("isDone")) {
-                    task.setDone(Boolean.parseBoolean(changeTask.get("isDone")));
+                if (changeTaskMap.containsKey("isDone")) {
+                    task.setDone(isDone);
                 }
-                if (changeTask.containsKey("name")) {
-                    task.setName(changeTask.get("name").replaceAll("[^A-Za-zА-Яа-я0-9 ]", ""));
+                if (changeTaskMap.containsKey("name")) {
+                    task.setName(name);
                 }
-                if (changeTask.containsKey("title")) {
-                    task.setTitle(changeTask.get("title").replaceAll("[^A-Za-zА-Яа-я0-9 ]", ""));
+                if (changeTaskMap.containsKey("title")) {
+                    task.setTitle(title);
                 }
-                if (changeTask.containsKey("priority")) {
-                    task.setPriority(Byte.parseByte(changeTask.get("priority")));
+                if (changeTaskMap.containsKey("priority")) {
+                    task.setPriority((byte) priority);
                 }
                 return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // не верно указан список
+                throw new TaskListNotFoundException();
             }
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // не найден Task
+            throw new TaskNotFoundException();
         }
 
     }

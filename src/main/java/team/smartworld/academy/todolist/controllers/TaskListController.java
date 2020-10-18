@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.smartworld.academy.todolist.entity.TaskList;
+import team.smartworld.academy.todolist.exceptions.TaskListBadParameterException;
+import team.smartworld.academy.todolist.exceptions.TaskListNotFoundException;
 import team.smartworld.academy.todolist.repository.TaskListRepository;
 
 import java.time.LocalDateTime;
@@ -43,8 +45,12 @@ public class TaskListController {
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTaskList(@PathVariable("id") Long id) {
-          repository.deleteById(id);
+    public void deleteTaskList(@PathVariable("id") Long id) throws TaskListNotFoundException {
+        if (repository.findById(id).isPresent()) {
+            repository.deleteById(id);
+        } else {
+            throw new TaskListNotFoundException();
+        }
     }
 
     /**
@@ -54,12 +60,12 @@ public class TaskListController {
      * @return TaskList and status or error and status
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTaskList(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getTaskList(@PathVariable("id") Long id) throws TaskListNotFoundException {
         Optional<TaskList> oTaskList = repository.findById(id);
         if (oTaskList.isPresent()) {
             return new ResponseEntity<>(repository.findById(id), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new TaskListNotFoundException();
         }
     }
 
@@ -72,17 +78,22 @@ public class TaskListController {
      */
     @PatchMapping("/{id}")
     public ResponseEntity<?> renameTaskList(@PathVariable("id") Long id,
-                                            @RequestBody Map<String, String> newName) {
+                                            @RequestBody Map<String, String> newName)
+            throws TaskListNotFoundException,
+            TaskListBadParameterException {
         // Проверки
-        Optional<TaskList> list = repository.findById(id);
-        if (list.isPresent()) {
-            TaskList taskList = list.get();
-            taskList.setName(newName.get("name").replaceAll("[^A-Za-zА-Яа-я0-9 ]", ""));
-            taskList.setDateChange(LocalDateTime.now());
-            return new ResponseEntity<>(repository.save(taskList), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (newName.containsKey("name") && !newName.get("name").isEmpty()) {
+            Optional<TaskList> list = repository.findById(id);
+            if (list.isPresent()) {
+                TaskList taskList = list.get();
+                taskList.setName(newName.get("name").replaceAll("[^A-Za-zА-Яа-я0-9 ]", ""));
+                taskList.setDateChange(LocalDateTime.now());
+                return new ResponseEntity<>(repository.save(taskList), HttpStatus.OK);
+            } else {
+                throw new TaskListNotFoundException();
+            }
         }
+        throw new TaskListBadParameterException("name");
     }
     /**
      * Method for getting all TaskLists
@@ -133,22 +144,23 @@ public class TaskListController {
     /**
      * Method for create TaskList
      *
-     * @param newNameTaskList new TaskList date
+     * @param nameMap new TaskList date
      * @return TaskList and status or error and status
      */
     @PostMapping
-    public ResponseEntity<?> newTaskList(@RequestBody Map<String, String> newNameTaskList) {
+    public ResponseEntity<?> newTaskList(@RequestBody Map<String, String> nameMap)
+            throws TaskListBadParameterException {
         // Проверки
         // Создание и сохранение в БД
-        if (newNameTaskList.containsKey("name")) {
+        if (nameMap.containsKey("name") && !nameMap.get("name").isEmpty()) {
             TaskList taskList = new TaskList();
-            taskList.setName(newNameTaskList.get("name").replaceAll("[^A-Za-zА-Яа-я0-9]", ""));
+            taskList.setName(nameMap.get("name").replaceAll("[^A-Za-zА-Яа-я0-9]", ""));
             taskList.setDateCreated(LocalDateTime.now());
             taskList.setDateChange(LocalDateTime.now());
             String createdTaskListId = "{ \"id\": \"" + repository.save(taskList).getId() + "\" }";
             return new ResponseEntity<>(createdTaskListId, HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        throw new TaskListBadParameterException("name");
     }
 
 }

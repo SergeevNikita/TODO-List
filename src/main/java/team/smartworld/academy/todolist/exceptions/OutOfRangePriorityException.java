@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class OutOfRangePriorityException extends TaskListException {
 
+    public static final int CODE_EXCEPTION = 300;
+
     /**
-     * Task List Bad Name Exception
+     * Constructor
      */
     public OutOfRangePriorityException() {
-        super("Out of range priority (can be from 1 to 5)", 13);
+        super("Out of range priority (can be from 1 to 5)", CODE_EXCEPTION);
     }
 
 }

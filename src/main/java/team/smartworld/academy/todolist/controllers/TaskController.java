@@ -26,7 +26,7 @@ import java.util.Map;
 public class TaskController {
 
     /**
-     * DatabaseService
+     * Database Service object
      */
     private final DatabaseService dbService;
 

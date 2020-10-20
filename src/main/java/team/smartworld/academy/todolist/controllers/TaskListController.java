@@ -6,12 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.smartworld.academy.todolist.entity.TaskList;
-import team.smartworld.academy.todolist.exceptions.BadNameException;
-import team.smartworld.academy.todolist.exceptions.TaskListNotFoundException;
-import team.smartworld.academy.todolist.repository.TaskListRepository;
+import team.smartworld.academy.todolist.exceptions.TaskListException;
+import team.smartworld.academy.todolist.service.CheckParameterService;
+import team.smartworld.academy.todolist.service.DatabaseService;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Task List controller
@@ -26,141 +27,142 @@ import java.util.*;
 public class TaskListController {
 
     /**
-     *
+     * Database Service object
      */
-    private final TaskListRepository repository;
+    private final DatabaseService dbService;
 
     /**
-     * @param repository TaskList repository
+     * @param dbService DatabaseService object
      */
     @Autowired
-    public TaskListController(TaskListRepository repository) {
-        this.repository = repository;
+    public TaskListController(DatabaseService dbService) {
+        this.dbService = dbService;
     }
 
     /**
      * Method for deleting TaskList.
      *
-     * @param id is the id of the TaskList to delete in DB
+     * @param idString is the id of the TaskList to delete
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTaskList(@PathVariable("id") Long id) throws TaskListNotFoundException {
-        if (repository.findById(id).isPresent()) {
-            repository.deleteById(id);
-        } else {
-            throw new TaskListNotFoundException();
-        }
+    public void deleteTaskList(@PathVariable("id") String idString) throws TaskListException {
+        Long id = CheckParameterService.checkAndGetTaskListId(idString);
+        dbService.deleteTaskList(id);
     }
 
     /**
      * Method for getting TaskList
      *
-     * @param id is the id for search TaskList in DB
+     * @param idString is the id for search TaskList
      * @return TaskList and status or error and status
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTaskList(@PathVariable("id") Long id) throws TaskListNotFoundException {
-        Optional<TaskList> oTaskList = repository.findById(id);
-        if (oTaskList.isPresent()) {
-            return new ResponseEntity<>(repository.findById(id), HttpStatus.OK);
-        } else {
-            throw new TaskListNotFoundException();
-        }
+    public ResponseEntity<?> getTaskList(@PathVariable("id") String idString) throws TaskListException {
+        Long id = CheckParameterService.checkAndGetTaskListId(idString);
+        TaskList taskList = dbService.getTaskList(id);
+        return new ResponseEntity<>(taskList, HttpStatus.OK);
     }
 
     /**
      * Method for rename TaskList
      *
-     * @param newName new name for TaskList
-     * @param id      is the id for search TaskList in DB
+     * @param mapData  new name for TaskList
+     * @param idString is the id for search TaskList
      * @return status or error and status
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<?> renameTaskList(@PathVariable("id") Long id,
-                                            @RequestBody Map<String, String> newName)
-            throws TaskListNotFoundException,
-            BadNameException {
-        // Проверки
-        if (newName.containsKey("name") && !newName.get("name").isEmpty()) {
-            Optional<TaskList> list = repository.findById(id);
-            if (list.isPresent()) {
-                TaskList taskList = list.get();
-                taskList.setName(newName.get("name").replaceAll("[^A-Za-zА-Яа-я0-9 ]", ""));
-                taskList.setDateChange(LocalDateTime.now());
-                return new ResponseEntity<>(repository.save(taskList), HttpStatus.OK);
-            } else {
-                throw new TaskListNotFoundException();
-            }
-        }
-        throw new BadNameException();
+    public ResponseEntity<?> renameTaskList(@PathVariable("id") String idString,
+                                            @RequestBody Map<String, String> mapData)
+            throws TaskListException {
+        Long id = CheckParameterService.checkAndGetTaskListId(idString);
+        String name = CheckParameterService.checkAndGetName(mapData);
+        TaskList taskList = dbService.getTaskList(id);
+        taskList.setName(name);
+        taskList.setDateChange(LocalDateTime.now());
+        taskList = dbService.saveTaskList(taskList);
+        return new ResponseEntity<>(taskList, HttpStatus.OK);
+
     }
+
     /**
      * Method for getting all TaskLists
      *
-     * @param params params sorted and filters
+     * @param mapData Data sorted and filters
      * @return all TaskList and status or error and status
      */
 
     // Подумать... переделать.
     @GetMapping
-    public ResponseEntity<?> getAllTaskLists(@RequestBody Map<String, String> params) {
+    public ResponseEntity<?> getAllTaskLists(@RequestBody Map<String, String> mapData) throws TaskListException {
         // Проверки и прочее.
-        long startId = 1L;
-        if (params.containsKey("startId")) {
-            long parseStartId = Long.parseLong(params.get("startId"));
-            if (parseStartId > 0L) {
-                startId = parseStartId;
-            }
+        // Пагинация
+        long offset = 0L;
+        if (mapData.containsKey("offset")) {
+            offset = CheckParameterService.checkAndGetOffset(mapData);
         }
         int limit = 10;
-        if (params.containsKey("limit")) {
-            int parseLimit = Integer.parseInt(params.get("limit"));
-            if (parseLimit > 0 && parseLimit < 100) {
-                limit = parseLimit;
-            }
+        if (mapData.containsKey("limit")) {
+            limit = CheckParameterService.checkAndGetLimit(mapData);
+        }
+        // сортировка
+        boolean dateCreatedSort = false;
+        if (mapData.containsKey("dateCreatedSort")) {
+            dateCreatedSort = CheckParameterService.checkAndGetDateCreatedSort(mapData);
+        }
+        boolean dateChangeSort = false;
+        if (mapData.containsKey("dateChangeSort")) {
+            dateChangeSort = CheckParameterService.checkAndGetDateChangeSort(mapData);
+        }
+        boolean nameSort = false;
+        if (mapData.containsKey("nameSort")) {
+            nameSort = CheckParameterService.checkAndGetNameSort(mapData);
+        }
+        boolean isDoneSort = false;
+        if (mapData.containsKey("isDoneSort")) {
+            isDoneSort = CheckParameterService.checkAndGetIsDoneSort(mapData);
+        }
+        // фильтрация
+        LocalDateTime dateCreatedFilter = null;
+        if (mapData.containsKey("dateCreated")) {
+            dateCreatedFilter = CheckParameterService.checkAndGetDateCreated(mapData);
+        }
+        LocalDateTime dateChangeFilter = null;
+        if (mapData.containsKey("dateChange")) {
+            dateChangeFilter = CheckParameterService.checkAndGetDateChange(mapData);
+        }
+        String nameFilter = null;
+        if (mapData.containsKey("name")) {
+            nameFilter = CheckParameterService.checkAndGetName(mapData);
+        }
+        Boolean isDoneFilter = null;
+        if (mapData.containsKey("isDone")) {
+            isDoneFilter = CheckParameterService.checkAndGetIsDone(mapData);
         }
 
-        Iterable<TaskList> oTaskList = repository.findAll();
-        Iterator<TaskList> listIterator = oTaskList.iterator();
-        List<Map<String, String>> taskListDate = new ArrayList<>();
 
-        while (listIterator.hasNext() && limit > 0) {
-            TaskList taskList = listIterator.next();
-            if (taskList.getId() >= startId) {
-                Map<String, String> dataMap = new HashMap<>();
-                dataMap.put("id", Long.toString(taskList.getId()));
-                dataMap.put("name", taskList.getName());
-                dataMap.put("dateCreated", taskList.getDateCreated().toString());
-                dataMap.put("dateChange", taskList.getDateChange().toString());
-                dataMap.put("isDone", Boolean.toString(taskList.isDone()));
-                taskListDate.add(dataMap);
-                limit--;
-            }
-        }
+        List<Map<String, String>> taskListDate = dbService.getAllTaskList(offset, limit,
+                dateCreatedSort, dateChangeSort, nameSort, isDoneSort,
+                dateCreatedFilter, dateChangeFilter, nameFilter, isDoneFilter);
         return new ResponseEntity<>(taskListDate, HttpStatus.OK);
     }
 
     /**
      * Method for create TaskList
      *
-     * @param nameMap new TaskList date
+     * @param mapData new TaskList data
      * @return TaskList and status or error and status
      */
     @PostMapping
-    public ResponseEntity<?> newTaskList(@RequestBody Map<String, String> nameMap)
-            throws BadNameException {
-        // Проверки
-        // Создание и сохранение в БД
-        if (nameMap.containsKey("name") && !nameMap.get("name").isEmpty()) {
-            TaskList taskList = new TaskList();
-            taskList.setName(nameMap.get("name").replaceAll("[^A-Za-zА-Яа-я0-9]", ""));
-            taskList.setDateCreated(LocalDateTime.now());
-            taskList.setDateChange(LocalDateTime.now());
-            String createdTaskListId = "{ \"id\": \"" + repository.save(taskList).getId() + "\" }";
-            return new ResponseEntity<>(createdTaskListId, HttpStatus.CREATED);
-        }
-        throw new BadNameException();
+    public ResponseEntity<?> newTaskList(@RequestBody Map<String, String> mapData) throws TaskListException {
+        String name = CheckParameterService.checkAndGetName(mapData);
+        TaskList taskList = new TaskList();
+        taskList.setName(name);
+        taskList.setDateCreated(LocalDateTime.now());
+        taskList.setDateChange(LocalDateTime.now());
+        Map.Entry<String, Long> createdTaskListId = Map.entry("id", dbService.saveTaskList(taskList).getId());
+        return new ResponseEntity<>(createdTaskListId, HttpStatus.CREATED);
+
     }
 
 }

@@ -8,9 +8,33 @@ public class InvalidParameterException extends TaskListException {
     /**
      * Constructor
      *
-     * @param parameter invalid parameter
+     * @param exceptionType Type exception
      */
-    public InvalidParameterException(String parameter) {
-        super("Invalid format for parameter: " + parameter, 4);
+    public InvalidParameterException(ExceptionType exceptionType) {
+        super(exceptionType.message, exceptionType.codeException);
+    }
+
+
+    public enum ExceptionType {
+        TASK_LIST_ID("Task List Id", 100),
+        TASK_ID("Task Id", 101),
+        IS_DONE("isDone", 102),
+        PRIORITY("priority", 103),
+        LIMIT("limit", 104),
+        OFFSET("offset", 105),
+        DATE_CREATED("dateCreated", 106),
+        DATE_CHANGE("dateChange", 107),
+        DATE_CREATED_SORT("dateCreatedSort", 108),
+        DATE_CHANGE_SORT("dateChangeSort", 109),
+        NAME_SORT("nameSort", 110),
+        IS_DONE_SORT("isDoneSort", 111);
+
+        private final String message;
+        private final int codeException;
+
+        ExceptionType(String name, int ordinal) {
+            message = "Invalid format for parameter '" + name + "'";
+            codeException = ordinal;
+        }
     }
 }

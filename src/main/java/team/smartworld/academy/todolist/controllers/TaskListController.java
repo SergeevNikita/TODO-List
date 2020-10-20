@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.smartworld.academy.todolist.entity.TaskList;
-import team.smartworld.academy.todolist.exceptions.TaskListBadParameterException;
+import team.smartworld.academy.todolist.exceptions.BadNameException;
 import team.smartworld.academy.todolist.exceptions.TaskListNotFoundException;
 import team.smartworld.academy.todolist.repository.TaskListRepository;
 
@@ -80,7 +80,7 @@ public class TaskListController {
     public ResponseEntity<?> renameTaskList(@PathVariable("id") Long id,
                                             @RequestBody Map<String, String> newName)
             throws TaskListNotFoundException,
-            TaskListBadParameterException {
+            BadNameException {
         // Проверки
         if (newName.containsKey("name") && !newName.get("name").isEmpty()) {
             Optional<TaskList> list = repository.findById(id);
@@ -93,7 +93,7 @@ public class TaskListController {
                 throw new TaskListNotFoundException();
             }
         }
-        throw new TaskListBadParameterException("name");
+        throw new BadNameException();
     }
     /**
      * Method for getting all TaskLists
@@ -149,7 +149,7 @@ public class TaskListController {
      */
     @PostMapping
     public ResponseEntity<?> newTaskList(@RequestBody Map<String, String> nameMap)
-            throws TaskListBadParameterException {
+            throws BadNameException {
         // Проверки
         // Создание и сохранение в БД
         if (nameMap.containsKey("name") && !nameMap.get("name").isEmpty()) {
@@ -160,7 +160,7 @@ public class TaskListController {
             String createdTaskListId = "{ \"id\": \"" + repository.save(taskList).getId() + "\" }";
             return new ResponseEntity<>(createdTaskListId, HttpStatus.CREATED);
         }
-        throw new TaskListBadParameterException("name");
+        throw new BadNameException();
     }
 
 }

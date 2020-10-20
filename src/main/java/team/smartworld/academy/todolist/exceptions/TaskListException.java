@@ -1,17 +1,15 @@
 package team.smartworld.academy.todolist.exceptions;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Super class from other exceptions
  */
 @Getter
-@Setter
 public class TaskListException extends Exception {
 
-    private int codeException;
-    private String message;
+    private final int codeException;
+    private final String message;
 
     /**
      * Constructor

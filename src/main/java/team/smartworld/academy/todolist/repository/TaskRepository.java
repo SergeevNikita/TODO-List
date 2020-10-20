@@ -6,9 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import team.smartworld.academy.todolist.entity.Task;
 
 /**
- *
+ * Task repository
  */
 @Repository
 @Transactional
 public interface TaskRepository extends CrudRepository<Task, Long> {
+
 }

@@ -128,13 +128,13 @@ public class TaskController {
             task.setName(TaskListParseParameterService.getName(mapData));
         }
         if (mapData.containsKey("title")) {
-            task.setTitle(TaskListParseParameterService.checkAndGetTitle(mapData));
+            task.setTitle(TaskListParseParameterService.getTitle(mapData));
         }
         if (mapData.containsKey("done")) {
             task.setDone(TaskListParseParameterService.getDone(mapData));
         }
         if (mapData.containsKey("priority")) {
-            task.setPriority(TaskListParseParameterService.checkAndGetPriority(mapData));
+            task.setPriority(TaskListParseParameterService.getPriority(mapData));
         }
         task = dbService.saveTask(task);
         return new ResponseEntity<>(task, HttpStatus.OK);
@@ -161,8 +161,8 @@ public class TaskController {
             @RequestBody Map<String, String> mapData) throws TaskListException {
         UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
         String name = TaskListParseParameterService.getName(mapData);
-        String title = TaskListParseParameterService.checkAndGetTitle(mapData);
-        byte priority = TaskListParseParameterService.checkAndGetPriority(mapData);
+        String title = TaskListParseParameterService.getTitle(mapData);
+        byte priority = TaskListParseParameterService.getPriority(mapData);
         TaskList taskList = dbService.getTaskList(taskListId);
 
         Task task = new Task();

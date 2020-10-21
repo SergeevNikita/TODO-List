@@ -4,13 +4,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * BadParameterException class
+ * Класс исключения сообщающий о том, что введёный обязательный параметр отсутствует или отсутствует его значение
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class BadParameterException extends TaskListException {
 
     /**
-     * Constructor
+     * Конструктор
+     *
+     * @param type принемает тип исключения
      */
     public BadParameterException(ExceptionType type) {
         super(type.message, type.codeException);
@@ -20,7 +22,7 @@ public class BadParameterException extends TaskListException {
     public enum ExceptionType {
         NAME("name", 200),
         TITLE("title", 201),
-        IS_DONE("isDone", 202),
+        DONE("done", 202),
         PRIORITY("priority", 203),
         DATE_CREATED("dateCreated", 204),
         DATE_CHANGE("dateChange", 205),
@@ -29,7 +31,7 @@ public class BadParameterException extends TaskListException {
         DATE_CREATED_SORT("dateCreatedSort", 208),
         DATE_CHANGE_SORT("dateChangeSort", 209),
         NAME_SORT("nameSort", 210),
-        IS_DONE_SORT("isDoneSort", 211);
+        DONE_SORT("doneSort", 211);
 
         private final String message;
         private final int codeException;

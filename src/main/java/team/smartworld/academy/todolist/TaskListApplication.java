@@ -10,8 +10,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * Main class TodoList Application
- * SwaggerUI URL: See <a href=http://localhost:8080/swagger-ui/>SwaggerUI</a>
+ * Класс запускающий приложение
+ * SwaggerUI URL: <a href=http://localhost:8080/swagger-ui/>SwaggerUI</a> *
  *
  * @author Sergeev Nikita
  * @version 1.0
@@ -21,18 +21,18 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class TaskListApplication {
 
     /**
-     * Main method from start server
+     * Метод запуска приложения
      *
-     * @param args arguments
+     * @param args принемает аргументы запуска приложения
      */
     public static void main(String[] args) {
         SpringApplication.run(TaskListApplication.class, args);
     }
 
     /**
-     * Swagger2 UI
+     * Конфигурация Swagger2 UI
      *
-     * @return Docked
+     * @return возвращает обьект Docked
      */
     @Bean
     public Docket api() {

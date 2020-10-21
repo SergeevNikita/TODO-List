@@ -11,7 +11,7 @@
             </column>
             <column name="date_change" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="date_created" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="is_done" type="BOOLEAN">
+            <column name="done" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
             <column name="name" type="VARCHAR(30)">

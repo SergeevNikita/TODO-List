@@ -5,12 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * TaskListNotFoundException class
+ * Класс исключения сообщающий о том, что обьект не найден
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class NotFoundException extends TaskListException {
     /**
-     * Constructor
+     * Конструктор
+     *
+     * @param exceptionType принемает тип исключения
      */
     public NotFoundException(ExceptionType exceptionType) {
         super(exceptionType.message, exceptionType.codeException);

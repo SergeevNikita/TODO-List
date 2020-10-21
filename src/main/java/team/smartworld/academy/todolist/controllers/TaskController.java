@@ -10,15 +10,16 @@ import org.springframework.web.bind.annotation.*;
 import team.smartworld.academy.todolist.entity.Task;
 import team.smartworld.academy.todolist.entity.TaskList;
 import team.smartworld.academy.todolist.exceptions.TaskListException;
-import team.smartworld.academy.todolist.service.CheckParameterService;
-import team.smartworld.academy.todolist.service.DatabaseService;
+import team.smartworld.academy.todolist.service.TaskListDatabaseService;
+import team.smartworld.academy.todolist.service.TaskListParseParameterService;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
 /**
- * Task controller
+ * Task controller - класс обработки REST запросов пользователя
+ * Позволяет создавать, изменять, удалять, и получать обьект Task.
  *
  * @author Sergeev Nikita
  * @version 1.0
@@ -29,137 +30,139 @@ import java.util.UUID;
 public class TaskController {
 
     /**
-     * Database Service object
+     * Обьект сервиса работы с базой данных
      */
-    private final DatabaseService dbService;
+    private final TaskListDatabaseService dbService;
 
     /**
-     * Constructor
+     * Конструктор
      *
-     * @param dbService service for working with a database
+     * @param dbService принемает обьект сервиса работы с базой данных
      */
     @Autowired
-    public TaskController(DatabaseService dbService) {
+    public TaskController(TaskListDatabaseService dbService) {
         this.dbService = dbService;
     }
 
     /**
-     * Method for deleting Task in TodoList.
+     * Метод для удаления обьекта Task в TaskLis по ID.
      *
-     * @param taskListIdString TaskList id
-     * @param idString         is the id of the Task to delete in DB
+     * @param taskListIdString принемает ID обьекта TaskList
+     * @param taskIdString     принемает ID обьекта Task
      */
     @ApiOperation(value = "Deleting Task",
             notes = "Deleting Task by taskListId and id")
-    @DeleteMapping("/{taskListId}/task/{id}")
+    @DeleteMapping("/{taskListIdString}/task/{taskIdString}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(
             @ApiParam(value = "Id task list", required = true)
-            @PathVariable("taskListId") String taskListIdString,
+            @PathVariable("taskListIdString") String taskListIdString,
             @ApiParam(value = "Id task", required = true)
-            @PathVariable("id") String idString)
+            @PathVariable("taskIdString") String taskIdString)
             throws TaskListException {
-        UUID taskListId = CheckParameterService.checkAndGetTaskListId(taskListIdString);
-        UUID id = CheckParameterService.checkAndGetTaskId(idString);
-        Task task = dbService.getTask(taskListId, id);
+        UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
+        UUID taskId = TaskListParseParameterService.parseTaskId(taskIdString);
+        Task task = dbService.getTask(taskListId, taskId);
         dbService.deleteTask(task);
     }
 
     /**
-     * Method for mark done in Task.
+     * Метод для изменения поля 'done' обькта Task по ID
      *
-     * @param taskListIdString TaskList id
-     * @param idString         is the id of the Task to mark done in DB
-     * @return status or error type end status
+     * @param taskListIdString принемает ID обьекта TaskList
+     * @param taskIdString     принемает ID обьекта Task
+     * @param mapData          получает значение в поле 'done' в формате json
+     * @return возвращает изменённый обьект Task
      */
 
     @ApiOperation(value = "Mark is done Task",
             notes = "Marking is done Task by taskListId and id")
-    @PatchMapping("/{taskListId}/task/{id}")
+    @PatchMapping("/{taskListIdString}/task/{taskIdString}")
     public ResponseEntity<?> markDoneTask(
             @ApiParam(value = "Id task list", required = true)
-            @PathVariable("taskListId") String taskListIdString,
+            @PathVariable("taskListIdString") String taskListIdString,
             @ApiParam(value = "Id task", required = true)
-            @PathVariable("id") String idString,
-            @ApiParam(value = "Json isDone data", required = true, example = "{\n\t\"isDone\":\"true\"\n}")
+            @PathVariable("taskIdString") String taskIdString,
+            @ApiParam(value = "Json done data", required = true, example = "{\n\t\"done\":\"true\"\n}")
             @RequestBody Map<String, String> mapData)
             throws TaskListException {
 
-        UUID taskListId = CheckParameterService.checkAndGetTaskListId(taskListIdString);
-        UUID id = CheckParameterService.checkAndGetTaskId(idString);
-        boolean isDone = CheckParameterService.checkAndGetIsDone(mapData);
+        UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
+        UUID id = TaskListParseParameterService.parseTaskId(taskIdString);
+        boolean done = TaskListParseParameterService.getDone(mapData);
         Task task = dbService.getTask(taskListId, id);
-        task.setDone(isDone);
+        task.setDone(done);
         task = dbService.saveTask(task);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
 
     /**
-     * Method for change in Task.
+     * Метод для изменения обьекта Task по ID
      *
-     * @param taskListIdString TaskList id
-     * @param idString         is the id of the Task to change in DB
-     * @param mapData          changed Task date
-     * @return status or error type end status
+     * @param taskListIdString принемает ID обьекта TaskList
+     * @param taskIdString     принемает ID обьекта Task
+     * @param mapData          получает значения в полях 'name', 'title','priority' и 'done' в формате json
+     * @return возвращает изменённый обьект Task
      */
 
     @ApiOperation(value = "Change Task",
             notes = "Change Task by taskListId and id")
-    @PutMapping("/{taskListId}/task/{id}")
+    @PutMapping("/{taskListIdString}/task/{taskIdString}")
     public ResponseEntity<?> changeTask(
             @ApiParam(value = "Id task list", required = true)
-            @PathVariable("taskListId") String taskListIdString,
+            @PathVariable("taskListIdString") String taskListIdString,
             @ApiParam(value = "Id task", required = true)
-            @PathVariable("id") String idString,
-            @ApiParam(value = "Json isDone data", required = true,
-                    example = "{\n\t\"isDone\":\"true\"," +
+            @PathVariable("taskIdString") String taskIdString,
+            @ApiParam(value = "Json done data", required = true,
+                    example = "{\n\t\"done\":\"true\"," +
                             "\n\t\"name\":\"name task\"," +
                             "\n\t\"title\":\"eny title\"," +
                             "\n\t\"priority\":\"3\"\n}")
             @RequestBody Map<String, String> mapData)
             throws TaskListException {
-        UUID taskListId = CheckParameterService.checkAndGetTaskListId(taskListIdString);
-        UUID id = CheckParameterService.checkAndGetTaskId(idString);
-        Task task = dbService.getTask(taskListId, id);
+        UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
+        UUID taskId = TaskListParseParameterService.parseTaskId(taskIdString);
+        Task task = dbService.getTask(taskListId, taskId);
         if (mapData.containsKey("name")) {
-            task.setName(CheckParameterService.checkAndGetName(mapData));
+            task.setName(TaskListParseParameterService.getName(mapData));
         }
         if (mapData.containsKey("title")) {
-            task.setTitle(CheckParameterService.checkAndGetTitle(mapData));
+            task.setTitle(TaskListParseParameterService.checkAndGetTitle(mapData));
         }
-        if (mapData.containsKey("isDone")) {
-            task.setDone(CheckParameterService.checkAndGetIsDone(mapData));
+        if (mapData.containsKey("done")) {
+            task.setDone(TaskListParseParameterService.getDone(mapData));
         }
         if (mapData.containsKey("priority")) {
-            task.setPriority(CheckParameterService.checkAndGetPriority(mapData));
+            task.setPriority(TaskListParseParameterService.checkAndGetPriority(mapData));
         }
         task = dbService.saveTask(task);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
     /**
-     * Method for create Task
+     * Метод для создания обьекта Task
      *
-     * @param mapData new Task Data
-     * @return Task and status or error and status
+     * @param taskListIdString принемает ID обьекта TaskList
+     * @param mapData получает значения в полях 'name', 'title','priority' и 'done' в формате json
+     * @return возвращает созданный обьект Task
      */
     @ApiOperation(value = "Create Task",
             notes = "Creating Task by taskListId and id")
-    @PostMapping("/{taskListId}/task")
+    @PostMapping("/{taskListIdString}/task")
     public ResponseEntity<?> newTask(
             @ApiParam(value = "Id task list", required = true)
-            @PathVariable("taskListId") String taskListIdString,
-            @ApiParam(value = "Json isDone data", required = true,
-                    example = "{\n\t\"isDone\":\"true\"," +
+            @PathVariable("taskListIdString") String taskListIdString,
+            @ApiParam(value = "Json data", required = true,
+                    example = "{\n\t\"done\":\"true\"," +
                             "\n\t\"name\":\"name task\"," +
                             "\n\t\"title\":\"eny title\"," +
                             "\n\t\"priority\":\"3\"\n}")
             @RequestBody Map<String, String> mapData) throws TaskListException {
-        UUID taskListId = CheckParameterService.checkAndGetTaskListId(taskListIdString);
-        String name = CheckParameterService.checkAndGetName(mapData);
-        String title = CheckParameterService.checkAndGetTitle(mapData);
-        byte priority = CheckParameterService.checkAndGetPriority(mapData);
+        UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
+        String name = TaskListParseParameterService.getName(mapData);
+        String title = TaskListParseParameterService.checkAndGetTitle(mapData);
+        byte priority = TaskListParseParameterService.checkAndGetPriority(mapData);
         TaskList taskList = dbService.getTaskList(taskListId);
 
         Task task = new Task();
@@ -178,26 +181,26 @@ public class TaskController {
     }
 
     /**
-     * Method for getting Task
+     * Метод для получения бьекта Task по ID
      *
-     * @param taskListIdString TaskList id
-     * @param idString         is the id for search Task in DB
-     * @return Task and status or error and status
+     * @param taskListIdString принемает ID обьекта TaskList
+     * @param taskIdString     принемает ID обьекта Task
+     * @return возвращает обьект Task
      */
     @ApiOperation(value = "Get Task",
             notes = "Getting Task by taskListId and id")
-    @GetMapping("/{taskListId}/task/{id}")
+    @GetMapping("/{taskListIdString}/task/{taskIdString}")
     public ResponseEntity<?> getTask(
             @ApiParam(value = "Id task list", required = true)
-            @PathVariable("taskListId") String taskListIdString,
+            @PathVariable("taskListIdString") String taskListIdString,
             @ApiParam(value = "Id task", required = true)
-            @PathVariable("id") String idString)
+            @PathVariable("taskIdString") String taskIdString)
             throws TaskListException {
 
-        UUID taskListId = CheckParameterService.checkAndGetTaskListId(taskListIdString);
-        UUID id = CheckParameterService.checkAndGetTaskId(idString);
-        Task task = dbService.getTask(taskListId, id);
-//        Task task = dbService.getTaskNew(taskListId, id);
+        UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
+        UUID taskId = TaskListParseParameterService.parseTaskId(taskIdString);
+        Task task = dbService.getTask(taskListId, taskId);
+//        Task task = dbService.getTaskNew(taskListId, taskId);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 }

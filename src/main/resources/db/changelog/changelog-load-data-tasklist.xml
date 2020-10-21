@@ -1,0 +1,17 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet author="nik" id="4">
+        <loadData file="db/changelog/data/task_list.csv" separator="," tableName="task_list">
+            <column header="id" name="id" type="UUID"/>
+            <column header="date_change" name="date_change" type="DATE"/>
+            <column header="date_created" name="date_created" type="DATE"/>
+            <column header="done" name="done" type="BOOLEAN"/>
+            <column header="name" name="name" type="STRING"/>
+            <column header="number_of_completed_task" name="number_of_completed_task" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

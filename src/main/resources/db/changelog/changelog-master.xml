@@ -5,6 +5,10 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <include file="db/changelog/changelog-task.xml"/>
+    <include file="db/changelog/changelog-load-data-task.xml"/>
     <include file="db/changelog/changelog-tasklist.xml"/>
-    <includeAll path="db/changelog/data/"/>
+
+    <!--    <includeAll path="db/changelog/data/"/>-->
+    <include file="db/changelog/changelog-load-data-tasklist.xml"/>
+    <include file="db/changelog/changelog-add-key-tasklist.xml"/>
 </databaseChangeLog>

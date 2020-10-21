@@ -5,12 +5,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import team.smartworld.academy.todolist.entity.Task;
 
+import java.util.UUID;
+
 /**
- * Task repository
+ * Интерфейс репозитория для работы с БД класа Task
  */
 @Repository
 @Transactional
-public interface TaskRepository extends CrudRepository<Task, Long> {
+public interface TaskRepository extends CrudRepository<Task, UUID> {
 
-    //Optional<Task> findById(UUID id);
 }

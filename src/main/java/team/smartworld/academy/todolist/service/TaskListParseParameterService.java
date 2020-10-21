@@ -12,26 +12,25 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Task service
+ * Сервис для проверки на корректность и преобразования значений параметров
  */
 @Service
-public class CheckParameterService {
+public class TaskListParseParameterService {
 
     public static final int NAME_MAX_SIZE = 30;
-    public static final int TITLE_MAX_SIZE = 256;
+    public static final int TITLE_MAX_SIZE = 255;
 
-    private CheckParameterService() {
+    private TaskListParseParameterService() {
     }
 
     /**
      * @param id Task id
-     * @return Long value id
+     * @return UUID value id
      * @throws InvalidParameterException exception
      */
 
-    public static UUID checkAndGetTaskId(String id) throws InvalidParameterException {
+    public static UUID parseTaskId(String id) throws InvalidParameterException {
         try {
-//            return Long.parseLong(id);
             return UUID.fromString(id);
         } catch (NumberFormatException e) {
             throw new InvalidParameterException(InvalidParameterException.ExceptionType.TASK_ID);
@@ -40,12 +39,11 @@ public class CheckParameterService {
 
     /**
      * @param id Task List id
-     * @return Long value id
+     * @return UUID value id
      * @throws InvalidParameterException exception
      */
-    public static UUID checkAndGetTaskListId(String id) throws InvalidParameterException {
+    public static UUID parseTaskListId(String id) throws InvalidParameterException {
         try {
-//            return Long.parseLong(id);
             return UUID.fromString(id);
         } catch (NumberFormatException e) {
             throw new InvalidParameterException(InvalidParameterException.ExceptionType.TASK_LIST_ID);
@@ -58,17 +56,17 @@ public class CheckParameterService {
      * @throws BadParameterException     exception
      * @throws InvalidParameterException exception
      */
-    public static boolean checkAndGetIsDone(Map<String, String> mapParameters)
+    public static boolean getDone(Map<String, String> mapParameters)
             throws InvalidParameterException, BadParameterException {
         if (!mapParameters.containsKey("isDone")
                 || mapParameters.get("isDone").isEmpty()) {
-            throw new BadParameterException(BadParameterException.ExceptionType.IS_DONE);
+            throw new BadParameterException(BadParameterException.ExceptionType.DONE);
         }
         if ("true".equalsIgnoreCase(mapParameters.get("isDone"))
                 || "false".equalsIgnoreCase(mapParameters.get("isDone"))) {
             return Boolean.parseBoolean(mapParameters.get("isDone"));
         } else {
-            throw new InvalidParameterException(InvalidParameterException.ExceptionType.IS_DONE);
+            throw new InvalidParameterException(InvalidParameterException.ExceptionType.DONE);
         }
     }
 
@@ -77,7 +75,7 @@ public class CheckParameterService {
      * @return name value
      * @throws BadParameterException exception
      */
-    public static String checkAndGetName(Map<String, String> mapData) throws BadParameterException {
+    public static String getName(Map<String, String> mapData) throws BadParameterException {
         if (mapData.containsKey("name") && !mapData.get("name").isEmpty()) {
             String name = mapData.get("name").replaceAll("[^\\p{L}\\p{Z}]", "")
                     .trim();
@@ -134,7 +132,7 @@ public class CheckParameterService {
      * @throws BadParameterException     exception
      * @throws InvalidParameterException exception
      */
-    public static long checkAndGetOffset(Map<String, String> mapData) throws BadParameterException, InvalidParameterException {
+    public static long getOffset(Map<String, String> mapData) throws BadParameterException, InvalidParameterException {
         if (mapData.containsKey("offset") && !mapData.get("offset").isEmpty()) {
             try {
                 long offset = Long.parseLong(mapData.get("offset"));
@@ -154,7 +152,7 @@ public class CheckParameterService {
      * @throws BadParameterException     exception
      * @throws InvalidParameterException exception
      */
-    public static int checkAndGetLimit(Map<String, String> mapData) throws BadParameterException, InvalidParameterException {
+    public static int getLimit(Map<String, String> mapData) throws BadParameterException, InvalidParameterException {
         if (mapData.containsKey("limit") && !mapData.get("limit").isEmpty()) {
             try {
                 int limit = Integer.parseInt(mapData.get("limit"));
@@ -174,7 +172,7 @@ public class CheckParameterService {
      * @throws BadParameterException     exception
      * @throws InvalidParameterException exception
      */
-    public static LocalDateTime checkAndGetDateCreated(Map<String, String> mapData)
+    public static LocalDateTime getDateCreated(Map<String, String> mapData)
             throws BadParameterException, InvalidParameterException {
         if (mapData.containsKey("dateCreated") && !mapData.get("dateCreated").isEmpty()) {
             String dateCreatedString = mapData.get("dateCreated");
@@ -194,7 +192,7 @@ public class CheckParameterService {
      * @throws InvalidParameterException exception
      * @throws BadParameterException     exception
      */
-    public static LocalDateTime checkAndGetDateChange(Map<String, String> mapData)
+    public static LocalDateTime getDateChange(Map<String, String> mapData)
             throws InvalidParameterException, BadParameterException {
         if (mapData.containsKey("dateChange") && !mapData.get("dateChange").isEmpty()) {
             String dateChangeString = mapData.get("dateChange");
@@ -214,7 +212,7 @@ public class CheckParameterService {
      * @throws BadParameterException     exception
      * @throws InvalidParameterException exception
      */
-    public static boolean checkAndGetDateCreatedSort(Map<String, String> mapData)
+    public static boolean getDateCreatedSort(Map<String, String> mapData)
             throws BadParameterException, InvalidParameterException {
         if (!mapData.containsKey("dateCreatedSort")
                 || mapData.get("dateCreatedSort").isEmpty()) {
@@ -234,7 +232,7 @@ public class CheckParameterService {
      * @throws BadParameterException     exception
      * @throws InvalidParameterException exception
      */
-    public static boolean checkAndGetDateChangeSort(Map<String, String> mapData)
+    public static boolean getDateChangeSort(Map<String, String> mapData)
             throws BadParameterException, InvalidParameterException {
         if (!mapData.containsKey("dateChangeSort")
                 || mapData.get("dateChangeSort").isEmpty()) {
@@ -254,7 +252,7 @@ public class CheckParameterService {
      * @throws BadParameterException     exception
      * @throws InvalidParameterException exception
      */
-    public static boolean checkAndGetNameSort(Map<String, String> mapData)
+    public static boolean getNameSort(Map<String, String> mapData)
             throws BadParameterException, InvalidParameterException {
         if (!mapData.containsKey("nameSort")
                 || mapData.get("nameSort").isEmpty()) {
@@ -274,17 +272,17 @@ public class CheckParameterService {
      * @throws BadParameterException     exception
      * @throws InvalidParameterException exception
      */
-    public static boolean checkAndGetIsDoneSort(Map<String, String> mapData)
+    public static boolean getDoneSort(Map<String, String> mapData)
             throws BadParameterException, InvalidParameterException {
         if (!mapData.containsKey("isDoneSort")
                 || mapData.get("isDoneSort").isEmpty()) {
-            throw new BadParameterException(BadParameterException.ExceptionType.IS_DONE_SORT);
+            throw new BadParameterException(BadParameterException.ExceptionType.DONE_SORT);
         }
         if ("true".equalsIgnoreCase(mapData.get("isDoneSort"))
                 || "false".equalsIgnoreCase(mapData.get("isDoneSort"))) {
             return Boolean.parseBoolean(mapData.get("isDoneSort"));
         } else {
-            throw new InvalidParameterException(InvalidParameterException.ExceptionType.IS_DONE_SORT);
+            throw new InvalidParameterException(InvalidParameterException.ExceptionType.DONE_SORT);
         }
     }
 

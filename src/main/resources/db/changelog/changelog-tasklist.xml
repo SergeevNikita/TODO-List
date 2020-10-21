@@ -3,16 +3,14 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <property name="uuid_type" value="uuid" dbms="postgresql"/>
-    <property name="uuid_function" value="uid.uuid_generate_v4()" dbms="postgresql"/>
-    <changeSet author="nik" id="2">
+    <changeSet author="nik" id="3">
         <createTable tableName="task_list">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="task_list_pkey"/>
             </column>
             <column name="date_change" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="date_created" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="is_done" type="BOOLEAN">
+            <column name="done" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
             <column name="name" type="VARCHAR(30)">
@@ -20,12 +18,5 @@
             </column>
             <column name="number_of_completed_task" type="BIGINT"/>
         </createTable>
-    </changeSet>
-    <changeSet author="nik" id="3">
-        <addForeignKeyConstraint baseColumnNames="task_list_id" baseTableName="task"
-                                 constraintName="fknoop17o52c1kg73bskj5o4rdx" deferrable="false"
-                                 initiallyDeferred="false" onDelete="NO ACTION"
-                                 onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableName="task_list" validate="true"/>
     </changeSet>
 </databaseChangeLog>

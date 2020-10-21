@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * Task model
+ * Класс описания сущьности Task
  *
  * @author Sergeev Nikita
  * @version 1.0
@@ -18,18 +18,15 @@ import java.util.UUID;
 @Entity
 @Data
 public class Task {
-
     /**
      * ID
      */
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     /**
      * id списка дел к которому принадлежит (подумать как реализовать связь)
      */
-
     @ManyToOne
     @JoinColumn(nullable = false)
     @JsonIgnore
@@ -37,12 +34,10 @@ public class Task {
     /**
      * Дата создания
      */
-
     private LocalDateTime dateCreated;
     /**
      * Дата изменения
      */
-
     private LocalDateTime dateChange;
     /**
      * Название дела
@@ -63,7 +58,6 @@ public class Task {
     /**
      * Состояние (сделано или нет)
      */
-
-    private boolean isDone;
+    private boolean done;
 
 }

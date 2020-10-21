@@ -9,7 +9,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.Map;
 
 /**
- * ExtendedErrorAttributes class
+ * Класс добавляющий в атрибуты исключения сообщение пользователю и код ошибки
  */
 @Component
 public class ExtendedErrorAttributes extends DefaultErrorAttributes {
@@ -23,7 +23,6 @@ public class ExtendedErrorAttributes extends DefaultErrorAttributes {
             errorAttributes.put("message", exception.getMessage());
             errorAttributes.put("code", exception.getCodeException());
         }
-
         return errorAttributes;
     }
 }

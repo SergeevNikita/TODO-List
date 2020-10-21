@@ -1,16 +1,14 @@
 package team.smartworld.academy.todolist.controllers;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.smartworld.academy.todolist.entity.TaskList;
 import team.smartworld.academy.todolist.exceptions.TaskListException;
-import team.smartworld.academy.todolist.service.CheckParameterService;
-import team.smartworld.academy.todolist.service.DatabaseService;
+import team.smartworld.academy.todolist.service.TaskListDatabaseService;
+import team.smartworld.academy.todolist.service.TaskListParseParameterService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +16,8 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Task List controller
+ * Task List controller - класс обработки REST запросов пользователя.
+ * Позволяет создавать, переименовывать, удалять, и получать обьект TaskList.
  *
  * @author Sergeev Nikita
  * @version 1.0
@@ -30,71 +29,75 @@ import java.util.UUID;
 public class TaskListController {
 
     /**
-     * Database Service object
+     * Обьект сервиса работы с базой данных
      */
-    private final DatabaseService dbService;
+    private final TaskListDatabaseService dbService;
 
     /**
-     * Constructor
+     * Конструктор
      *
-     * @param dbService DatabaseService object
+     * @param dbService принемает обьект сервиса работы с базой данных
      */
     @Autowired
-    public TaskListController(DatabaseService dbService) {
+    public TaskListController(TaskListDatabaseService dbService) {
         this.dbService = dbService;
     }
 
     /**
-     * Method for deleting TaskList.
+     * Метод для удаления обьекта TaskList по ID.
      *
-     * @param idString is the id of the TaskList to delete
+     * @param taskListIdString принемает ID обьекта TaskList
      */
     @ApiOperation(value = "Deleting Task List",
             notes = "Deleting Task List by id")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{taskListIdString}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiResponse(code = 500, message = "Database not available")
     public void deleteTaskList(
-            @ApiParam(value = "Id task", required = true)
-            @PathVariable("id") String idString) throws TaskListException {
-        UUID id = CheckParameterService.checkAndGetTaskListId(idString);
+            @ApiParam(value = "Id task list", required = true)
+            @PathVariable("taskListIdString") String taskListIdString) throws TaskListException {
+        UUID id = TaskListParseParameterService.parseTaskListId(taskListIdString);
         dbService.deleteTaskList(id);
     }
 
     /**
-     * Method for getting TaskList
+     * Метод для получения обьекта TaskList по ID
      *
-     * @param idString is the id for search TaskList
-     * @return TaskList and status or error and status
+     * @param taskListIdString принемает ID обьекта TaskList
+     * @return возвращает обьект TaskList
      */
     @ApiOperation(value = "Get Task List",
             notes = "Getting Task List by id")
-    @GetMapping("/{id}")
+    @GetMapping("/{taskListIdString}")
     public ResponseEntity<?> getTaskList(
-            @ApiParam(value = "Id task", required = true)
-            @PathVariable("id") String idString) throws TaskListException {
-        UUID id = CheckParameterService.checkAndGetTaskListId(idString);
+            @ApiParam(value = "Id task list", required = true)
+            @PathVariable("taskListIdString") String taskListIdString) throws TaskListException {
+        UUID id = TaskListParseParameterService.parseTaskListId(taskListIdString);
         TaskList taskList = dbService.getTaskList(id);
         return new ResponseEntity<>(taskList, HttpStatus.OK);
     }
 
     /**
-     * Method for rename TaskList
+     * Метод для изменения поля name обьекта TaskList по ID
      *
-     * @param mapData  new name for TaskList
-     * @param idString is the id for search TaskList
-     * @return status or error and status
+     * @param mapData          получает новое имя в поле 'name' в формате json
+     * @param taskListIdString получает ID обьекта TaskList
+     * @return возвращает изменённый обьект TaskList
      */
-    @PatchMapping("/{id}")
+    @PatchMapping("/{taskListIdString}")
     @ApiOperation(value = "Rename Task List",
             notes = "Rename Task List by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Not Found or Empty name value"),
+            @ApiResponse(code = 500, message = "Database not available")})
     public ResponseEntity<?> renameTaskList(
             @ApiParam(value = "Id task", required = true)
-            @PathVariable("id") String idString,
+            @PathVariable("taskListIdString") String taskListIdString,
             @ApiParam(value = "Json name data", required = true, example = "{\n\t\"name\":\"name task list\"\n}")
             @RequestBody Map<String, String> mapData)
             throws TaskListException {
-        UUID id = CheckParameterService.checkAndGetTaskListId(idString);
-        String name = CheckParameterService.checkAndGetName(mapData);
+        UUID id = TaskListParseParameterService.parseTaskListId(taskListIdString);
+        String name = TaskListParseParameterService.getName(mapData);
         TaskList taskList = dbService.getTaskList(id);
         taskList.setName(name);
         taskList.setDateChange(LocalDateTime.now());
@@ -104,10 +107,10 @@ public class TaskListController {
     }
 
     /**
-     * Method for getting all TaskLists
+     * Метод для получения списка всех обьектов TaskList
      *
-     * @param mapData Data sorted and filters
-     * @return all TaskList and status or error and status
+     * @param mapData получает данные пагинации, сортировки и фильтрации
+     * @return возвращает список обьектов TaskList
      */
 
     @GetMapping
@@ -120,67 +123,70 @@ public class TaskListController {
         // Пагинация
         long offset = 0L;
         if (mapData.containsKey("offset")) {
-            offset = CheckParameterService.checkAndGetOffset(mapData);
+            offset = TaskListParseParameterService.getOffset(mapData);
         }
         int limit = 10;
         if (mapData.containsKey("limit")) {
-            limit = CheckParameterService.checkAndGetLimit(mapData);
+            limit = TaskListParseParameterService.getLimit(mapData);
         }
         // сортировка
         boolean dateCreatedSort = false;
         if (mapData.containsKey("dateCreatedSort")) {
-            dateCreatedSort = CheckParameterService.checkAndGetDateCreatedSort(mapData);
+            dateCreatedSort = TaskListParseParameterService.getDateCreatedSort(mapData);
         }
         boolean dateChangeSort = false;
         if (mapData.containsKey("dateChangeSort")) {
-            dateChangeSort = CheckParameterService.checkAndGetDateChangeSort(mapData);
+            dateChangeSort = TaskListParseParameterService.getDateChangeSort(mapData);
         }
         boolean nameSort = false;
         if (mapData.containsKey("nameSort")) {
-            nameSort = CheckParameterService.checkAndGetNameSort(mapData);
+            nameSort = TaskListParseParameterService.getNameSort(mapData);
         }
-        boolean isDoneSort = false;
-        if (mapData.containsKey("isDoneSort")) {
-            isDoneSort = CheckParameterService.checkAndGetIsDoneSort(mapData);
+        boolean doneSort = false;
+        if (mapData.containsKey("doneSort")) {
+            doneSort = TaskListParseParameterService.getDoneSort(mapData);
         }
         // фильтрация
         LocalDateTime dateCreatedFilter = null;
         if (mapData.containsKey("dateCreated")) {
-            dateCreatedFilter = CheckParameterService.checkAndGetDateCreated(mapData);
+            dateCreatedFilter = TaskListParseParameterService.getDateCreated(mapData);
         }
         LocalDateTime dateChangeFilter = null;
         if (mapData.containsKey("dateChange")) {
-            dateChangeFilter = CheckParameterService.checkAndGetDateChange(mapData);
+            dateChangeFilter = TaskListParseParameterService.getDateChange(mapData);
         }
         String nameFilter = null;
         if (mapData.containsKey("name")) {
-            nameFilter = CheckParameterService.checkAndGetName(mapData);
+            nameFilter = TaskListParseParameterService.getName(mapData);
         }
-        Boolean isDoneFilter = null;
-        if (mapData.containsKey("isDone")) {
-            isDoneFilter = CheckParameterService.checkAndGetIsDone(mapData);
+        Boolean doneFilter = null;
+        if (mapData.containsKey("done")) {
+            doneFilter = TaskListParseParameterService.getDone(mapData);
         }
 
 
         List<Map<String, String>> taskListDate = dbService.getAllTaskList(offset, limit,
-                dateCreatedSort, dateChangeSort, nameSort, isDoneSort,
-                dateCreatedFilter, dateChangeFilter, nameFilter, isDoneFilter);
+                dateCreatedSort, dateChangeSort, nameSort, doneSort,
+                dateCreatedFilter, dateChangeFilter, nameFilter, doneFilter);
         return new ResponseEntity<>(taskListDate, HttpStatus.OK);
     }
 
     /**
-     * Method for create TaskList
+     * Метод для создания обьекта TaskList
      *
-     * @param mapData new TaskList data
-     * @return TaskList and status or error and status
+     * @param mapData получает имя в поле 'name' в формате json
+     * @return возвращает созданный обьект TaskList
      */
     @PostMapping
     @ApiOperation(value = "Create Task List",
             notes = "Creating Task List")
-    public ResponseEntity<?> newTaskList(
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Not Found or Empty name value"),
+            @ApiResponse(code = 500, message = "Database not available")})
+    public ResponseEntity<?> createTaskList(
             @ApiParam(value = "Json name data", required = true, example = "{\n\t\"name\":\"name task list\"\n}")
             @RequestBody Map<String, String> mapData) throws TaskListException {
-        String name = CheckParameterService.checkAndGetName(mapData);
+        String name = TaskListParseParameterService.getName(mapData);
         TaskList taskList = new TaskList();
         taskList.setName(name);
         taskList.setDateCreated(LocalDateTime.now());

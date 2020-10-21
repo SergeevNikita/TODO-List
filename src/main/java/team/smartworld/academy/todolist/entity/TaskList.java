@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * TaskList model
+ * Класс описания сущьности TaskList
  *
  * @author Sergeev Nikita
  * @version 1.0
@@ -22,19 +22,16 @@ public class TaskList {
     /**
      * ID
      */
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     /**
      * Дата создания
      */
-
     private LocalDateTime dateCreated;
     /**
      * Дата изменения
      */
-
     private LocalDateTime dateChange;
     /**
      * Название списка
@@ -45,19 +42,14 @@ public class TaskList {
     /**
      * Состояние (завершено или нет)
      */
-
-    private boolean isDone;
-
+    private boolean done;
     /**
      * Количество завершенных Task
      */
-
     private Long numberOfCompletedTask;
-
-    /* Список дел (нужно ли?) */
-
+    /**
+     * Список обьектов Task
+     */
     @OneToMany(mappedBy = "taskList", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Task> tasks;
-
-    
 }

@@ -90,7 +90,7 @@ public class TaskListController {
     public ResponseEntity<?> renameTaskList(
             @ApiParam(value = "Id task", required = true)
             @PathVariable("id") String idString,
-            @ApiParam(value = "Json name data", required = true, example = "{\"name\":\"name task list\"}")
+            @ApiParam(value = "Json name data", required = true, example = "{\n\t\"name\":\"name task list\"\n}")
             @RequestBody Map<String, String> mapData)
             throws TaskListException {
         UUID id = CheckParameterService.checkAndGetTaskListId(idString);
@@ -178,7 +178,7 @@ public class TaskListController {
     @ApiOperation(value = "Create Task List",
             notes = "Creating Task List")
     public ResponseEntity<?> newTaskList(
-            @ApiParam(value = "Json name data", required = true, example = "{\"name\":\"name task list\"}")
+            @ApiParam(value = "Json name data", required = true, example = "{\n\t\"name\":\"name task list\"\n}")
             @RequestBody Map<String, String> mapData) throws TaskListException {
         String name = CheckParameterService.checkAndGetName(mapData);
         TaskList taskList = new TaskList();

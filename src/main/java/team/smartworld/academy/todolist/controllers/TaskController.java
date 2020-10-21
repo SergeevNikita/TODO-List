@@ -81,7 +81,7 @@ public class TaskController {
             @PathVariable("taskListId") String taskListIdString,
             @ApiParam(value = "Id task", required = true)
             @PathVariable("id") String idString,
-            @ApiParam(value = "Json isDone data", required = true, example = "{\"isDone\":\"true\"}")
+            @ApiParam(value = "Json isDone data", required = true, example = "{\n\t\"isDone\":\"true\"\n}")
             @RequestBody Map<String, String> mapData)
             throws TaskListException {
 
@@ -112,7 +112,11 @@ public class TaskController {
             @PathVariable("taskListId") String taskListIdString,
             @ApiParam(value = "Id task", required = true)
             @PathVariable("id") String idString,
-            @ApiParam(value = "Json isDone data", required = true, example = "{\"isDone\":\"true\"}")
+            @ApiParam(value = "Json isDone data", required = true,
+                    example = "{\n\t\"isDone\":\"true\"," +
+                            "\n\t\"name\":\"name task\"," +
+                            "\n\t\"title\":\"eny title\"," +
+                            "\n\t\"priority\":\"3\"\n}")
             @RequestBody Map<String, String> mapData)
             throws TaskListException {
         UUID taskListId = CheckParameterService.checkAndGetTaskListId(taskListIdString);
@@ -146,7 +150,11 @@ public class TaskController {
     public ResponseEntity<?> newTask(
             @ApiParam(value = "Id task list", required = true)
             @PathVariable("taskListId") String taskListIdString,
-            @ApiParam(value = "Json isDone data", required = true, example = "{\"isDone\":\"true\"}")
+            @ApiParam(value = "Json isDone data", required = true,
+                    example = "{\n\t\"isDone\":\"true\"," +
+                            "\n\t\"name\":\"name task\"," +
+                            "\n\t\"title\":\"eny title\"," +
+                            "\n\t\"priority\":\"3\"\n}")
             @RequestBody Map<String, String> mapData) throws TaskListException {
         UUID taskListId = CheckParameterService.checkAndGetTaskListId(taskListIdString);
         String name = CheckParameterService.checkAndGetName(mapData);
@@ -162,8 +170,10 @@ public class TaskController {
         task.setDateCreated(LocalDateTime.now());
         task.setDateChange(LocalDateTime.now());
 
-        Map.Entry<String, UUID> createdTaskId = Map.entry("id", dbService.saveTask(task).getId());
-        return new ResponseEntity<>(createdTaskId, HttpStatus.CREATED);
+//        Map.Entry<String, UUID> createdTaskId = Map.entry("id", dbService.saveTask(task).getId());
+//        return new ResponseEntity<>(createdTaskId, HttpStatus.CREATED);
+        return new ResponseEntity<>("не реализовано", HttpStatus.CREATED);
+
 
     }
 

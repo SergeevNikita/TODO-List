@@ -1,6 +1,8 @@
 package team.smartworld.academy.todolist.controllers;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import team.smartworld.academy.todolist.service.DatabaseService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Task List controller
@@ -23,7 +26,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/todo/api/taskList")
-@Api(value = "Task List Controller", consumes = "json", produces = "json")
+@Api(value = "Task List Controller", consumes = "application/json", produces = "application/json")
 public class TaskListController {
 
     /**
@@ -32,6 +35,8 @@ public class TaskListController {
     private final DatabaseService dbService;
 
     /**
+     * Constructor
+     *
      * @param dbService DatabaseService object
      */
     @Autowired
@@ -44,10 +49,14 @@ public class TaskListController {
      *
      * @param idString is the id of the TaskList to delete
      */
+    @ApiOperation(value = "Deleting Task List",
+            notes = "Deleting Task List by id")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTaskList(@PathVariable("id") String idString) throws TaskListException {
-        Long id = CheckParameterService.checkAndGetTaskListId(idString);
+    public void deleteTaskList(
+            @ApiParam(value = "Id task", required = true)
+            @PathVariable("id") String idString) throws TaskListException {
+        UUID id = CheckParameterService.checkAndGetTaskListId(idString);
         dbService.deleteTaskList(id);
     }
 
@@ -57,9 +66,13 @@ public class TaskListController {
      * @param idString is the id for search TaskList
      * @return TaskList and status or error and status
      */
+    @ApiOperation(value = "Get Task List",
+            notes = "Getting Task List by id")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTaskList(@PathVariable("id") String idString) throws TaskListException {
-        Long id = CheckParameterService.checkAndGetTaskListId(idString);
+    public ResponseEntity<?> getTaskList(
+            @ApiParam(value = "Id task", required = true)
+            @PathVariable("id") String idString) throws TaskListException {
+        UUID id = CheckParameterService.checkAndGetTaskListId(idString);
         TaskList taskList = dbService.getTaskList(id);
         return new ResponseEntity<>(taskList, HttpStatus.OK);
     }
@@ -72,10 +85,15 @@ public class TaskListController {
      * @return status or error and status
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<?> renameTaskList(@PathVariable("id") String idString,
-                                            @RequestBody Map<String, String> mapData)
+    @ApiOperation(value = "Rename Task List",
+            notes = "Rename Task List by id")
+    public ResponseEntity<?> renameTaskList(
+            @ApiParam(value = "Id task", required = true)
+            @PathVariable("id") String idString,
+            @ApiParam(value = "Json name data", required = true, example = "{\"name\":\"name task list\"}")
+            @RequestBody Map<String, String> mapData)
             throws TaskListException {
-        Long id = CheckParameterService.checkAndGetTaskListId(idString);
+        UUID id = CheckParameterService.checkAndGetTaskListId(idString);
         String name = CheckParameterService.checkAndGetName(mapData);
         TaskList taskList = dbService.getTaskList(id);
         taskList.setName(name);
@@ -92,9 +110,12 @@ public class TaskListController {
      * @return all TaskList and status or error and status
      */
 
-    // Подумать... переделать.
     @GetMapping
-    public ResponseEntity<?> getAllTaskLists(@RequestBody Map<String, String> mapData) throws TaskListException {
+    @ApiOperation(value = "Get all Task List",
+            notes = "Getting all Task List")
+    public ResponseEntity<?> getAllTaskLists(
+            @ApiParam(value = "Json pagination, sorting and filtering data", required = true)
+            @RequestBody Map<String, String> mapData) throws TaskListException {
         // Проверки и прочее.
         // Пагинация
         long offset = 0L;
@@ -154,13 +175,17 @@ public class TaskListController {
      * @return TaskList and status or error and status
      */
     @PostMapping
-    public ResponseEntity<?> newTaskList(@RequestBody Map<String, String> mapData) throws TaskListException {
+    @ApiOperation(value = "Create Task List",
+            notes = "Creating Task List")
+    public ResponseEntity<?> newTaskList(
+            @ApiParam(value = "Json name data", required = true, example = "{\"name\":\"name task list\"}")
+            @RequestBody Map<String, String> mapData) throws TaskListException {
         String name = CheckParameterService.checkAndGetName(mapData);
         TaskList taskList = new TaskList();
         taskList.setName(name);
         taskList.setDateCreated(LocalDateTime.now());
         taskList.setDateChange(LocalDateTime.now());
-        Map.Entry<String, Long> createdTaskListId = Map.entry("id", dbService.saveTaskList(taskList).getId());
+        Map.Entry<String, UUID> createdTaskListId = Map.entry("id", dbService.saveTaskList(taskList).getId());
         return new ResponseEntity<>(createdTaskListId, HttpStatus.CREATED);
 
     }

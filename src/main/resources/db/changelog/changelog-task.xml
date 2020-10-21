@@ -3,9 +3,10 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
     <changeSet author="nik" id="1">
         <createTable tableName="task">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="task_pkey"/>
             </column>
             <column name="date_change" type="TIMESTAMP WITHOUT TIME ZONE"/>
@@ -22,7 +23,7 @@
             <column name="title" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="task_list_id" type="BIGINT">
+            <column name="task_list_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
         </createTable>

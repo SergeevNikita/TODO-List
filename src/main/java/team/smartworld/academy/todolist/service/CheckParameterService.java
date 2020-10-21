@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Task service
@@ -16,7 +17,8 @@ import java.util.Map;
 @Service
 public class CheckParameterService {
 
-    public static final int NAME_LENGTH_LIMIT = 30;
+    public static final int NAME_MAX_SIZE = 30;
+    public static final int TITLE_MAX_SIZE = 256;
 
     private CheckParameterService() {
     }
@@ -27,9 +29,10 @@ public class CheckParameterService {
      * @throws InvalidParameterException exception
      */
 
-    public static Long checkAndGetTaskId(String id) throws InvalidParameterException {
+    public static UUID checkAndGetTaskId(String id) throws InvalidParameterException {
         try {
-            return Long.parseLong(id);
+//            return Long.parseLong(id);
+            return UUID.fromString(id);
         } catch (NumberFormatException e) {
             throw new InvalidParameterException(InvalidParameterException.ExceptionType.TASK_ID);
         }
@@ -40,9 +43,10 @@ public class CheckParameterService {
      * @return Long value id
      * @throws InvalidParameterException exception
      */
-    public static Long checkAndGetTaskListId(String id) throws InvalidParameterException {
+    public static UUID checkAndGetTaskListId(String id) throws InvalidParameterException {
         try {
-            return Long.parseLong(id);
+//            return Long.parseLong(id);
+            return UUID.fromString(id);
         } catch (NumberFormatException e) {
             throw new InvalidParameterException(InvalidParameterException.ExceptionType.TASK_LIST_ID);
         }
@@ -75,8 +79,9 @@ public class CheckParameterService {
      */
     public static String checkAndGetName(Map<String, String> mapData) throws BadParameterException {
         if (mapData.containsKey("name") && !mapData.get("name").isEmpty()) {
-            return mapData.get("name").replaceAll("[^\\p{L}\\p{Z}]", "")
-                    .trim().substring(0, NAME_LENGTH_LIMIT);
+            String name = mapData.get("name").replaceAll("[^\\p{L}\\p{Z}]", "")
+                    .trim();
+            return name.length() < NAME_MAX_SIZE ? name : name.substring(0, NAME_MAX_SIZE);
 
         } else {
             throw new BadParameterException(BadParameterException.ExceptionType.NAME);
@@ -90,7 +95,8 @@ public class CheckParameterService {
      */
     public static String checkAndGetTitle(Map<String, String> mapData) throws BadParameterException {
         if (mapData.containsKey("title")) {
-            return mapData.get("title").replaceAll("[^\\p{L}\\p{Z}]", "").trim();
+            String title = mapData.get("title").replaceAll("[^\\p{L}\\p{Z}]", "").trim();
+            return title.length() < TITLE_MAX_SIZE ? title : title.substring(0, TITLE_MAX_SIZE);
         } else {
             throw new BadParameterException(BadParameterException.ExceptionType.TITLE);
         }
@@ -202,6 +208,12 @@ public class CheckParameterService {
         }
     }
 
+    /**
+     * @param mapData data
+     * @return created sort boolean value
+     * @throws BadParameterException     exception
+     * @throws InvalidParameterException exception
+     */
     public static boolean checkAndGetDateCreatedSort(Map<String, String> mapData)
             throws BadParameterException, InvalidParameterException {
         if (!mapData.containsKey("dateCreatedSort")
@@ -216,6 +228,12 @@ public class CheckParameterService {
         }
     }
 
+    /**
+     * @param mapData data
+     * @return date change sort value
+     * @throws BadParameterException     exception
+     * @throws InvalidParameterException exception
+     */
     public static boolean checkAndGetDateChangeSort(Map<String, String> mapData)
             throws BadParameterException, InvalidParameterException {
         if (!mapData.containsKey("dateChangeSort")
@@ -230,6 +248,12 @@ public class CheckParameterService {
         }
     }
 
+    /**
+     * @param mapData data
+     * @return name sort String value
+     * @throws BadParameterException     exception
+     * @throws InvalidParameterException exception
+     */
     public static boolean checkAndGetNameSort(Map<String, String> mapData)
             throws BadParameterException, InvalidParameterException {
         if (!mapData.containsKey("nameSort")
@@ -244,6 +268,12 @@ public class CheckParameterService {
         }
     }
 
+    /**
+     * @param mapData data
+     * @return isDone value
+     * @throws BadParameterException     exception
+     * @throws InvalidParameterException exception
+     */
     public static boolean checkAndGetIsDoneSort(Map<String, String> mapData)
             throws BadParameterException, InvalidParameterException {
         if (!mapData.containsKey("isDoneSort")

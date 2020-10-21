@@ -45,20 +45,21 @@ public class DatabaseService {
      * @throws DatabaseNotAvailableException exception
      * @throws NotFoundException             exception
      */
-    public Task getTask(Long taskListId, Long id) throws DatabaseNotAvailableException, NotFoundException {
+    public Task getTask(UUID taskListId, UUID id) throws DatabaseNotAvailableException, NotFoundException {
 
         TaskList taskList = getTaskList(taskListId);
         Optional<Task> oTask;
         try {
-            oTask = taskRepository.findById(id);
+            //oTask = taskRepository.findById(id);
         } catch (Exception e) {
             throw new DatabaseNotAvailableException();
         }
-        if (oTask.isPresent() && taskList.getTasks().contains(oTask.get())) {
-            return oTask.get();
-        } else {
-            throw new NotFoundException(NotFoundException.ExceptionType.TASK_NOT_FOUND);
-        }
+//        if (oTask.isPresent() && taskList.getTasks().contains(oTask.get())) {
+//            return oTask.get();
+//        } else {
+//            throw new NotFoundException(NotFoundException.ExceptionType.TASK_NOT_FOUND);
+//        }
+        return null;
     }
 
     /**
@@ -94,26 +95,27 @@ public class DatabaseService {
      * @throws DatabaseNotAvailableException exception
      * @throws NotFoundException             exception
      */
-    public TaskList getTaskList(Long id) throws DatabaseNotAvailableException, NotFoundException {
+    public TaskList getTaskList(UUID id) throws DatabaseNotAvailableException, NotFoundException {
         Optional<TaskList> oTaskList;
         try {
-            oTaskList = taskListRepository.findById(id);
+//            oTaskList = taskListRepository.findById(id);
         } catch (Exception e) {
             throw new DatabaseNotAvailableException();
         }
-        if (oTaskList.isPresent()) {
-            return oTaskList.get();
-        } else {
-            throw new NotFoundException(NotFoundException.ExceptionType.TASK_LIST_NOT_FOUND);
-        }
+//        if (oTaskList.isPresent()) {
+//            return oTaskList.get();
+//        } else {
+//            throw new NotFoundException(NotFoundException.ExceptionType.TASK_LIST_NOT_FOUND);
+//        }
+        return null;
     }
 
     /**
      * @param id id Task List
      */
-    public void deleteTaskList(Long id) throws DatabaseNotAvailableException {
+    public void deleteTaskList(UUID id) throws DatabaseNotAvailableException {
         try {
-            taskListRepository.deleteById(id);
+            //taskListRepository.deleteById(id);
         } catch (Exception e) {
             throw new DatabaseNotAvailableException();
         }
@@ -163,19 +165,19 @@ public class DatabaseService {
         Iterator<TaskList> listIterator = oTaskList.iterator();
         List<Map<String, String>> taskListDate = new ArrayList<>();
 
-        while (listIterator.hasNext() && limit > 0) {
-            TaskList taskList = listIterator.next();
-            if (taskList.getId() >= offset) {
-                Map<String, String> dataMap = new HashMap<>();
-                dataMap.put("id", Long.toString(taskList.getId()));
-                dataMap.put("name", taskList.getName());
-                dataMap.put("dateCreated", taskList.getDateCreated().toString());
-                dataMap.put("dateChange", taskList.getDateChange().toString());
-                dataMap.put("isDone", Boolean.toString(taskList.isDone()));
-                taskListDate.add(dataMap);
-                limit--;
-            }
-        }
+//        while (listIterator.hasNext() && limit > 0) {
+//            TaskList taskList = listIterator.next();
+//            if (taskList.getId() >= offset) {
+//                Map<String, String> dataMap = new HashMap<>();
+//                dataMap.put("id", Long.toString(taskList.getId()));
+//                dataMap.put("name", taskList.getName());
+//                dataMap.put("dateCreated", taskList.getDateCreated().toString());
+//                dataMap.put("dateChange", taskList.getDateChange().toString());
+//                dataMap.put("isDone", Boolean.toString(taskList.isDone()));
+//                taskListDate.add(dataMap);
+//                limit--;
+//            }
+//        }
         return taskListDate;
     }
 }

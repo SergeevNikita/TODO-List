@@ -6,49 +6,54 @@
 
     <changeSet author="nik" id="103">
         <insert tableName="task">
+            <column name="id" value="e159247d-f873-4a25-93ff-116ac62ad09d"/>
             <column name="name" value="list 3 task 1"/>
             <column name="date_change" valueDate="2020-10-17T12:36:17.070346"/>
             <column name="date_created" valueDate="2020-10-17T12:36:17.070270"/>
             <column name="is_done" valueBoolean="true"/>
             <column name="priority" valueNumeric="2"/>
             <column name="title" value="title list 3 task 1"/>
-            <column name="task_list_id" value="3"/>
+            <column name="task_list_id" value="e159247d-f873-4a25-87ff-117ac62ad09d"/>
         </insert>
         <insert tableName="task">
+            <column name="id" value="e159247d-f873-4a25-94ff-116ac62ad09d"/>
             <column name="name" value="list 3 task 2"/>
             <column name="date_change" valueDate="2020-10-17T12:46:17.070346"/>
             <column name="date_created" valueDate="2020-10-17T12:46:17.070270"/>
             <column name="is_done" valueBoolean="true"/>
             <column name="priority" valueNumeric="5"/>
             <column name="title" value="title list 3 task 2"/>
-            <column name="task_list_id" value="3"/>
+            <column name="task_list_id" value="e159247d-f873-4a25-87ff-117ac62ad09d"/>
         </insert>
         <insert tableName="task">
+            <column name="id" value="e159247d-f873-4a25-95ff-116ac62ad09d"/>
             <column name="name" value="list 3 task 3"/>
             <column name="date_change" valueDate="2020-10-17T12:56:17.070346"/>
             <column name="date_created" valueDate="2020-10-17T12:56:17.070270"/>
             <column name="is_done" valueBoolean="true"/>
             <column name="priority" valueNumeric="1"/>
             <column name="title" value="title list 3 task 3"/>
-            <column name="task_list_id" value="3"/>
+            <column name="task_list_id" value="e159247d-f873-4a25-87ff-117ac62ad09d"/>
         </insert>
         <insert tableName="task">
+            <column name="id" value="e159247d-f873-4a25-96ff-116ac62ad09d"/>
             <column name="name" value="list 3 task 4"/>
             <column name="date_change" valueDate="2020-10-16T12:44:17.070346"/>
             <column name="date_created" valueDate="2020-10-16T12:40:17.070270"/>
             <column name="is_done" valueBoolean="true"/>
             <column name="priority" valueNumeric="2"/>
             <column name="title" value="title list 3 task 5"/>
-            <column name="task_list_id" value="3"/>
+            <column name="task_list_id" value="e159247d-f873-4a25-87ff-117ac62ad09d"/>
         </insert>
         <insert tableName="task">
+            <column name="id" value="e159247d-f873-4a25-97ff-116ac62ad09d"/>
             <column name="name" value="list 3 task 5"/>
             <column name="date_change" valueDate="2020-10-15T12:46:17.070346"/>
             <column name="date_created" valueDate="2020-10-15T12:46:17.070270"/>
             <column name="is_done" valueBoolean="true"/>
             <column name="priority" valueNumeric="4"/>
             <column name="title" value="title list 3 task 5"/>
-            <column name="task_list_id" value="3"/>
+            <column name="task_list_id" value="e159247d-f873-4a25-87ff-117ac62ad09d"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

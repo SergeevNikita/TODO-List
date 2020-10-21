@@ -3,10 +3,11 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-
+    <property name="uuid_type" value="uuid" dbms="postgresql"/>
+    <property name="uuid_function" value="uid.uuid_generate_v4()" dbms="postgresql"/>
     <changeSet author="nik" id="2">
         <createTable tableName="task_list">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="task_list_pkey"/>
             </column>
             <column name="date_change" type="TIMESTAMP WITHOUT TIME ZONE"/>

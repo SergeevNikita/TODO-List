@@ -12,4 +12,5 @@ import team.smartworld.academy.todolist.entity.Task;
 @Transactional
 public interface TaskRepository extends CrudRepository<Task, Long> {
 
+    //Optional<Task> findById(UUID id);
 }

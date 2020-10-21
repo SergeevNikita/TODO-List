@@ -6,13 +6,14 @@
 
     <changeSet author="nik" id="115">
         <insert tableName="task">
+            <column name="id" value="e059247d-f873-4a25-87ff-115ac62ad15d"/>
             <column name="name" value="list 15 task 1"/>
             <column name="date_change" valueDate="2020-10-17T12:36:17.070346"/>
             <column name="date_created" valueDate="2020-10-17T12:36:17.070270"/>
             <column name="is_done" valueBoolean="true"/>
             <column name="priority" valueNumeric="2"/>
             <column name="title" value="title list 15 task 1"/>
-            <column name="task_list_id" value="15"/>
+            <column name="task_list_id" value="e159247d-f873-4a25-87ff-129ac62ad09d"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

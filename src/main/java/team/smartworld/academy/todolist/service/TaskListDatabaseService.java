@@ -2,9 +2,9 @@ package team.smartworld.academy.todolist.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team.smartworld.academy.todolist.entity.*;
+import team.smartworld.academy.todolist.entity.TaskList;
 import team.smartworld.academy.todolist.exceptions.*;
-import team.smartworld.academy.todolist.repository.*;
+import team.smartworld.academy.todolist.repository.TaskListRepository;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -16,75 +16,18 @@ import java.util.*;
 public class TaskListDatabaseService {
 
     /**
-     * Обьекты репозиториев для работы с БД
+     * Обьект репозитория для работы с БД
      */
-    private final TaskRepository taskRepository;
-
     private final TaskListRepository taskListRepository;
 
     /**
      * Конструктор
      *
-     * @param taskRepository     принемает обьект TaskRepository
      * @param taskListRepository принемает обьект TaskListRepository
      */
     @Autowired
-    public TaskListDatabaseService(TaskRepository taskRepository, TaskListRepository taskListRepository) {
-        this.taskRepository = taskRepository;
+    public TaskListDatabaseService(TaskListRepository taskListRepository) {
         this.taskListRepository = taskListRepository;
-    }
-
-    /**
-     * Метод для получения обьекта Task из БД
-     *
-     * @param taskListId принемает id обьекта TaskList
-     * @param taskId     принемает id обьекта Task
-     * @return возвращает обьект Task
-     * @throws DatabaseNotAvailableException выбрасывает исключение если БД не отвечает
-     * @throws NotFoundException             выбрасывает исключение если обьект Task не найден в БД
-     */
-    public Task getTask(UUID taskListId, UUID taskId) throws DatabaseNotAvailableException, NotFoundException {
-        TaskList taskList = getTaskList(taskListId);
-        Optional<Task> oTask;
-        try {
-            oTask = taskRepository.findById(taskId);
-        } catch (Exception e) {
-            throw new DatabaseNotAvailableException();
-        }
-        if (oTask.isPresent() && taskList.getTasks().contains(oTask.get())) {
-            return oTask.get();
-        } else {
-            throw new NotFoundException(NotFoundException.ExceptionType.TASK_NOT_FOUND);
-        }
-    }
-
-    /**
-     * Метод для удаления обьекта Task из БД
-     *
-     * @param task получает обьект типа task
-     * @throws DatabaseNotAvailableException выбрасывает исключение если БД не отвечает
-     */
-    public void deleteTask(Task task) throws DatabaseNotAvailableException {
-        try {
-            taskRepository.delete(task);
-        } catch (Exception e) {
-            throw new DatabaseNotAvailableException();
-        }
-    }
-
-    /**
-     * Метод для сохранения обьекта Task в БД
-     *
-     * @param task получает обьект типа task
-     * @return возвращает сохраненный обьект Task
-     * @throws DatabaseNotAvailableException выбрасывает исключение если БД не отвечает
-     */
-    public Task saveTask(Task task) throws DatabaseNotAvailableException {
-        try {
-            return taskRepository.save(task);
-        } catch (Exception e) {
-            throw new DatabaseNotAvailableException();
-        }
     }
 
     /**

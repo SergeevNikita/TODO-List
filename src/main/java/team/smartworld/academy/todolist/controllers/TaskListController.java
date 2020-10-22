@@ -26,16 +26,16 @@ public class TaskListController {
     /**
      * Обьект сервиса работы с базой данных
      */
-    private final TaskListDatabaseService dbService;
+    private final TaskListDatabaseService dbServiceTaskList;
 
     /**
      * Конструктор
      *
-     * @param dbService принемает обьект сервиса работы с базой данных
+     * @param dbServiceTaskList принемает обьект сервиса работы с базой данных модели TaskList
      */
     @Autowired
-    public TaskListController(TaskListDatabaseService dbService) {
-        this.dbService = dbService;
+    public TaskListController(TaskListDatabaseService dbServiceTaskList) {
+        this.dbServiceTaskList = dbServiceTaskList;
     }
 
     /**
@@ -53,7 +53,7 @@ public class TaskListController {
             @PathVariable("taskListIdString") String taskListIdString
     ) throws TaskListException {
         UUID id = TaskListParseParameterService.parseTaskListId(taskListIdString);
-        dbService.deleteTaskList(id);
+        dbServiceTaskList.deleteTaskList(id);
     }
 
     /**
@@ -70,7 +70,7 @@ public class TaskListController {
             @PathVariable("taskListIdString") String taskListIdString
     ) throws TaskListException {
         UUID id = TaskListParseParameterService.parseTaskListId(taskListIdString);
-        TaskList taskList = dbService.getTaskList(id);
+        TaskList taskList = dbServiceTaskList.getTaskList(id);
         return new ResponseEntity<>(taskList, HttpStatus.OK);
     }
 
@@ -97,10 +97,10 @@ public class TaskListController {
             throws TaskListException {
         UUID id = TaskListParseParameterService.parseTaskListId(taskListIdString);
         String name = TaskListParseParameterService.getName(mapData);
-        TaskList taskList = dbService.getTaskList(id);
+        TaskList taskList = dbServiceTaskList.getTaskList(id);
         taskList.setName(name);
         taskList.setDateChange(LocalDateTime.now());
-        taskList = dbService.saveTaskList(taskList);
+        taskList = dbServiceTaskList.saveTaskList(taskList);
         return new ResponseEntity<>(taskList, HttpStatus.OK);
     }
 
@@ -162,7 +162,7 @@ public class TaskListController {
             doneFilter = TaskListParseParameterService.getDone(mapData);
         }
 
-        List<Map<String, String>> taskListDate = dbService.getAllTaskList(offset, limit,
+        List<Map<String, String>> taskListDate = dbServiceTaskList.getAllTaskList(offset, limit,
                 dateCreatedSort, dateChangeSort, nameSort, doneSort,
                 dateCreatedFilter, dateChangeFilter, nameFilter, doneFilter
         );
@@ -191,7 +191,7 @@ public class TaskListController {
         taskList.setName(name);
         taskList.setDateCreated(LocalDateTime.now());
         taskList.setDateChange(LocalDateTime.now());
-        Map.Entry<String, UUID> createdTaskListId = Map.entry("id", dbService.saveTaskList(taskList).getId());
+        Map.Entry<String, UUID> createdTaskListId = Map.entry("id", dbServiceTaskList.saveTaskList(taskList).getId());
         return new ResponseEntity<>(createdTaskListId, HttpStatus.CREATED);
     }
 }

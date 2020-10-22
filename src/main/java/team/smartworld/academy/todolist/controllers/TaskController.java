@@ -24,18 +24,22 @@ import java.util.*;
 public class TaskController {
 
     /**
-     * Обьект сервиса работы с базой данных
+     * Обьекты сервисов работы с базой данных
      */
-    private final TaskListDatabaseService dbService;
+    private final TaskDatabaseService dbServiceTask;
+
+    private final TaskListDatabaseService dbServiceTaskList;
 
     /**
      * Конструктор
      *
-     * @param dbService принемает обьект сервиса работы с базой данных
+     * @param dbServiceTask     принемает обьект сервиса работы с базой данных Task
+     * @param dbServiceTaskList принемает обьект сервиса работы с базой данных TaskList
      */
     @Autowired
-    public TaskController(TaskListDatabaseService dbService) {
-        this.dbService = dbService;
+    public TaskController(TaskDatabaseService dbServiceTask, TaskListDatabaseService dbServiceTaskList) {
+        this.dbServiceTask = dbServiceTask;
+        this.dbServiceTaskList = dbServiceTaskList;
     }
 
     /**
@@ -56,9 +60,9 @@ public class TaskController {
     )
             throws TaskListException {
         UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
-        UUID taskId = TaskListParseParameterService.parseTaskId(taskIdString);
-        Task task = dbService.getTask(taskListId, taskId);
-        dbService.deleteTask(task);
+        UUID taskId = TaskParseParameterService.parseTaskId(taskIdString);
+        Task task = dbServiceTask.getTask(taskListId, taskId);
+        dbServiceTask.deleteTask(task);
     }
 
     /**
@@ -83,11 +87,11 @@ public class TaskController {
             throws TaskListException {
 
         UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
-        UUID id = TaskListParseParameterService.parseTaskId(taskIdString);
+        UUID id = TaskParseParameterService.parseTaskId(taskIdString);
         boolean done = TaskListParseParameterService.getDone(mapData);
-        Task task = dbService.getTask(taskListId, id);
+        Task task = dbServiceTask.getTask(taskListId, id);
         task.setDone(done);
-        task = dbService.saveTask(task);
+        task = dbServiceTask.saveTask(task);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
@@ -116,21 +120,21 @@ public class TaskController {
     )
             throws TaskListException {
         UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
-        UUID taskId = TaskListParseParameterService.parseTaskId(taskIdString);
-        Task task = dbService.getTask(taskListId, taskId);
+        UUID taskId = TaskParseParameterService.parseTaskId(taskIdString);
+        Task task = dbServiceTask.getTask(taskListId, taskId);
         if (mapData.containsKey("name")) {
             task.setName(TaskListParseParameterService.getName(mapData));
         }
         if (mapData.containsKey("title")) {
-            task.setTitle(TaskListParseParameterService.getTitle(mapData));
+            task.setTitle(TaskParseParameterService.getTitle(mapData));
         }
         if (mapData.containsKey("done")) {
             task.setDone(TaskListParseParameterService.getDone(mapData));
         }
         if (mapData.containsKey("priority")) {
-            task.setPriority(TaskListParseParameterService.getPriority(mapData));
+            task.setPriority(TaskParseParameterService.getPriority(mapData));
         }
-        task = dbService.saveTask(task);
+        task = dbServiceTask.saveTask(task);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
@@ -156,9 +160,9 @@ public class TaskController {
     ) throws TaskListException {
         UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
         String name = TaskListParseParameterService.getName(mapData);
-        String title = TaskListParseParameterService.getTitle(mapData);
-        byte priority = TaskListParseParameterService.getPriority(mapData);
-        TaskList taskList = dbService.getTaskList(taskListId);
+        String title = TaskParseParameterService.getTitle(mapData);
+        byte priority = TaskParseParameterService.getPriority(mapData);
+        TaskList taskList = dbServiceTaskList.getTaskList(taskListId);
 
         Task task = new Task();
         task.setTaskList(taskList);
@@ -168,9 +172,8 @@ public class TaskController {
         task.setDateCreated(LocalDateTime.now());
         task.setDateChange(LocalDateTime.now());
 
-//        Map.Entry<String, UUID> createdTaskId = Map.entry("id", dbService.saveTask(task).getId());
-//        return new ResponseEntity<>(createdTaskId, HttpStatus.CREATED);
-        return new ResponseEntity<>("не реализовано", HttpStatus.CREATED);
+        Map.Entry<String, UUID> createdTaskId = Map.entry("id", dbServiceTask.saveTask(task).getId());
+        return new ResponseEntity<>(createdTaskId, HttpStatus.CREATED);
     }
 
     /**
@@ -192,9 +195,8 @@ public class TaskController {
             throws TaskListException {
 
         UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
-        UUID taskId = TaskListParseParameterService.parseTaskId(taskIdString);
-        Task task = dbService.getTask(taskListId, taskId);
-//        Task task = dbService.getTaskNew(taskListId, taskId);
+        UUID taskId = TaskParseParameterService.parseTaskId(taskIdString);
+        Task task = dbServiceTask.getTask(taskListId, taskId);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 }

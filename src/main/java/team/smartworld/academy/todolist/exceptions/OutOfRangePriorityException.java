@@ -1,6 +1,5 @@
 package team.smartworld.academy.todolist.exceptions;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -18,5 +17,4 @@ public class OutOfRangePriorityException extends TaskListException {
     public OutOfRangePriorityException() {
         super("Out of range priority (can be from 1 to 5)", CODE_EXCEPTION);
     }
-
 }

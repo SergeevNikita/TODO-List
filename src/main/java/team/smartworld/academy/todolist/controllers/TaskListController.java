@@ -2,18 +2,14 @@ package team.smartworld.academy.todolist.controllers;
 
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import team.smartworld.academy.todolist.entity.TaskList;
 import team.smartworld.academy.todolist.exceptions.TaskListException;
-import team.smartworld.academy.todolist.service.TaskListDatabaseService;
-import team.smartworld.academy.todolist.service.TaskListParseParameterService;
+import team.smartworld.academy.todolist.service.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Task List controller - класс обработки REST запросов пользователя.
@@ -22,7 +18,6 @@ import java.util.UUID;
  * @author Sergeev Nikita
  * @version 1.0
  */
-
 @RestController
 @RequestMapping(value = "/todo/api/taskList")
 @Api(value = "Task List Controller", consumes = "application/json", produces = "application/json")
@@ -55,7 +50,8 @@ public class TaskListController {
     @ApiResponse(code = 500, message = "Database not available")
     public void deleteTaskList(
             @ApiParam(value = "Id task list", required = true)
-            @PathVariable("taskListIdString") String taskListIdString) throws TaskListException {
+            @PathVariable("taskListIdString") String taskListIdString
+    ) throws TaskListException {
         UUID id = TaskListParseParameterService.parseTaskListId(taskListIdString);
         dbService.deleteTaskList(id);
     }
@@ -71,7 +67,8 @@ public class TaskListController {
     @GetMapping("/{taskListIdString}")
     public ResponseEntity<?> getTaskList(
             @ApiParam(value = "Id task list", required = true)
-            @PathVariable("taskListIdString") String taskListIdString) throws TaskListException {
+            @PathVariable("taskListIdString") String taskListIdString
+    ) throws TaskListException {
         UUID id = TaskListParseParameterService.parseTaskListId(taskListIdString);
         TaskList taskList = dbService.getTaskList(id);
         return new ResponseEntity<>(taskList, HttpStatus.OK);
@@ -89,12 +86,14 @@ public class TaskListController {
             notes = "Rename Task List by id")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Not Found or Empty name value"),
-            @ApiResponse(code = 500, message = "Database not available")})
+            @ApiResponse(code = 500, message = "Database not available")
+    })
     public ResponseEntity<?> renameTaskList(
             @ApiParam(value = "Id task", required = true)
             @PathVariable("taskListIdString") String taskListIdString,
             @ApiParam(value = "Json name data", required = true, example = "{\n\t\"name\":\"name task list\"\n}")
-            @RequestBody Map<String, String> mapData)
+            @RequestBody Map<String, String> mapData
+    )
             throws TaskListException {
         UUID id = TaskListParseParameterService.parseTaskListId(taskListIdString);
         String name = TaskListParseParameterService.getName(mapData);
@@ -103,7 +102,6 @@ public class TaskListController {
         taskList.setDateChange(LocalDateTime.now());
         taskList = dbService.saveTaskList(taskList);
         return new ResponseEntity<>(taskList, HttpStatus.OK);
-
     }
 
     /**
@@ -112,13 +110,13 @@ public class TaskListController {
      * @param mapData получает данные пагинации, сортировки и фильтрации
      * @return возвращает список обьектов TaskList
      */
-
     @GetMapping
     @ApiOperation(value = "Get all Task List",
             notes = "Getting all Task List")
     public ResponseEntity<?> getAllTaskLists(
             @ApiParam(value = "Json pagination, sorting and filtering data", required = true)
-            @RequestBody Map<String, String> mapData) throws TaskListException {
+            @RequestBody Map<String, String> mapData
+    ) throws TaskListException {
         // Проверки и прочее.
         // Пагинация
         long offset = 0L;
@@ -164,10 +162,10 @@ public class TaskListController {
             doneFilter = TaskListParseParameterService.getDone(mapData);
         }
 
-
         List<Map<String, String>> taskListDate = dbService.getAllTaskList(offset, limit,
                 dateCreatedSort, dateChangeSort, nameSort, doneSort,
-                dateCreatedFilter, dateChangeFilter, nameFilter, doneFilter);
+                dateCreatedFilter, dateChangeFilter, nameFilter, doneFilter
+        );
         return new ResponseEntity<>(taskListDate, HttpStatus.OK);
     }
 
@@ -182,10 +180,12 @@ public class TaskListController {
             notes = "Creating Task List")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Not Found or Empty name value"),
-            @ApiResponse(code = 500, message = "Database not available")})
+            @ApiResponse(code = 500, message = "Database not available")
+    })
     public ResponseEntity<?> createTaskList(
             @ApiParam(value = "Json name data", required = true, example = "{\n\t\"name\":\"name task list\"\n}")
-            @RequestBody Map<String, String> mapData) throws TaskListException {
+            @RequestBody Map<String, String> mapData
+    ) throws TaskListException {
         String name = TaskListParseParameterService.getName(mapData);
         TaskList taskList = new TaskList();
         taskList.setName(name);
@@ -193,7 +193,5 @@ public class TaskListController {
         taskList.setDateChange(LocalDateTime.now());
         Map.Entry<String, UUID> createdTaskListId = Map.entry("id", dbService.saveTaskList(taskList).getId());
         return new ResponseEntity<>(createdTaskListId, HttpStatus.CREATED);
-
     }
-
 }

@@ -1,21 +1,15 @@
 package team.smartworld.academy.todolist.controllers;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import team.smartworld.academy.todolist.entity.Task;
-import team.smartworld.academy.todolist.entity.TaskList;
+import team.smartworld.academy.todolist.entity.*;
 import team.smartworld.academy.todolist.exceptions.TaskListException;
-import team.smartworld.academy.todolist.service.TaskListDatabaseService;
-import team.smartworld.academy.todolist.service.TaskListParseParameterService;
+import team.smartworld.academy.todolist.service.*;
 
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Task controller - класс обработки REST запросов пользователя
@@ -58,7 +52,8 @@ public class TaskController {
             @ApiParam(value = "Id task list", required = true)
             @PathVariable("taskListIdString") String taskListIdString,
             @ApiParam(value = "Id task", required = true)
-            @PathVariable("taskIdString") String taskIdString)
+            @PathVariable("taskIdString") String taskIdString
+    )
             throws TaskListException {
         UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
         UUID taskId = TaskListParseParameterService.parseTaskId(taskIdString);
@@ -74,7 +69,6 @@ public class TaskController {
      * @param mapData          получает значение в поле 'done' в формате json
      * @return возвращает изменённый обьект Task
      */
-
     @ApiOperation(value = "Mark is done Task",
             notes = "Marking is done Task by taskListId and id")
     @PatchMapping("/{taskListIdString}/task/{taskIdString}")
@@ -84,7 +78,8 @@ public class TaskController {
             @ApiParam(value = "Id task", required = true)
             @PathVariable("taskIdString") String taskIdString,
             @ApiParam(value = "Json done data", required = true, example = "{\n\t\"done\":\"true\"\n}")
-            @RequestBody Map<String, String> mapData)
+            @RequestBody Map<String, String> mapData
+    )
             throws TaskListException {
 
         UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
@@ -96,7 +91,6 @@ public class TaskController {
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
-
     /**
      * Метод для изменения обьекта Task по ID
      *
@@ -105,7 +99,6 @@ public class TaskController {
      * @param mapData          получает значения в полях 'name', 'title','priority' и 'done' в формате json
      * @return возвращает изменённый обьект Task
      */
-
     @ApiOperation(value = "Change Task",
             notes = "Change Task by taskListId and id")
     @PutMapping("/{taskListIdString}/task/{taskIdString}")
@@ -119,7 +112,8 @@ public class TaskController {
                             "\n\t\"name\":\"name task\"," +
                             "\n\t\"title\":\"eny title\"," +
                             "\n\t\"priority\":\"3\"\n}")
-            @RequestBody Map<String, String> mapData)
+            @RequestBody Map<String, String> mapData
+    )
             throws TaskListException {
         UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
         UUID taskId = TaskListParseParameterService.parseTaskId(taskIdString);
@@ -144,7 +138,7 @@ public class TaskController {
      * Метод для создания обьекта Task
      *
      * @param taskListIdString принемает ID обьекта TaskList
-     * @param mapData получает значения в полях 'name', 'title','priority' и 'done' в формате json
+     * @param mapData          получает значения в полях 'name', 'title','priority' и 'done' в формате json
      * @return возвращает созданный обьект Task
      */
     @ApiOperation(value = "Create Task",
@@ -158,7 +152,8 @@ public class TaskController {
                             "\n\t\"name\":\"name task\"," +
                             "\n\t\"title\":\"eny title\"," +
                             "\n\t\"priority\":\"3\"\n}")
-            @RequestBody Map<String, String> mapData) throws TaskListException {
+            @RequestBody Map<String, String> mapData
+    ) throws TaskListException {
         UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
         String name = TaskListParseParameterService.getName(mapData);
         String title = TaskListParseParameterService.getTitle(mapData);
@@ -176,8 +171,6 @@ public class TaskController {
 //        Map.Entry<String, UUID> createdTaskId = Map.entry("id", dbService.saveTask(task).getId());
 //        return new ResponseEntity<>(createdTaskId, HttpStatus.CREATED);
         return new ResponseEntity<>("не реализовано", HttpStatus.CREATED);
-
-
     }
 
     /**
@@ -194,7 +187,8 @@ public class TaskController {
             @ApiParam(value = "Id task list", required = true)
             @PathVariable("taskListIdString") String taskListIdString,
             @ApiParam(value = "Id task", required = true)
-            @PathVariable("taskIdString") String taskIdString)
+            @PathVariable("taskIdString") String taskIdString
+    )
             throws TaskListException {
 
         UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);

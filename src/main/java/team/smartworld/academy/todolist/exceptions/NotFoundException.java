@@ -1,6 +1,5 @@
 package team.smartworld.academy.todolist.exceptions;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -9,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class NotFoundException extends TaskListException {
+
     /**
      * Конструктор
      *
@@ -18,12 +18,12 @@ public class NotFoundException extends TaskListException {
         super(exceptionType.message, exceptionType.codeException);
     }
 
-
     public enum ExceptionType {
         TASK_LIST_NOT_FOUND("Task List Not Found", 1),
         TASK_NOT_FOUND("Task Not Found", 2);
 
         private final String message;
+
         private final int codeException;
 
         ExceptionType(String name, int ordinal) {

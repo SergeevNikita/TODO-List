@@ -18,7 +18,6 @@ public class BadParameterException extends TaskListException {
         super(type.message, type.codeException);
     }
 
-
     public enum ExceptionType {
         NAME("name", 200),
         TITLE("title", 201),
@@ -34,6 +33,7 @@ public class BadParameterException extends TaskListException {
         DONE_SORT("doneSort", 211);
 
         private final String message;
+
         private final int codeException;
 
         ExceptionType(String name, int ordinal) {
@@ -41,5 +41,4 @@ public class BadParameterException extends TaskListException {
             codeException = ordinal;
         }
     }
-
 }

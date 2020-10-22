@@ -1,15 +1,11 @@
 package team.smartworld.academy.todolist.service;
 
 import org.springframework.stereotype.Service;
-import team.smartworld.academy.todolist.exceptions.BadParameterException;
-import team.smartworld.academy.todolist.exceptions.InvalidParameterException;
-import team.smartworld.academy.todolist.exceptions.OutOfRangePriorityException;
+import team.smartworld.academy.todolist.exceptions.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Map;
-import java.util.UUID;
+import java.time.format.*;
+import java.util.*;
 
 /**
  * Сервис для проверки на корректность и преобразования значений параметров
@@ -18,6 +14,7 @@ import java.util.UUID;
 public class TaskListParseParameterService {
 
     public static final int NAME_MAX_SIZE = 30;
+
     public static final int TITLE_MAX_SIZE = 255;
 
     private TaskListParseParameterService() {
@@ -30,7 +27,6 @@ public class TaskListParseParameterService {
      * @return возвращает значение UUID
      * @throws InvalidParameterException неверный формат параметра
      */
-
     public static UUID parseTaskId(String id) throws InvalidParameterException {
         try {
             return UUID.fromString(id);
@@ -88,7 +84,6 @@ public class TaskListParseParameterService {
         if (mapData.containsKey("name") && !mapData.get("name").isEmpty()) {
             String name = mapData.get("name").replaceAll("[^\\p{L}\\p{Z}]", "").trim();
             return name.length() < NAME_MAX_SIZE ? name : name.substring(0, NAME_MAX_SIZE);
-
         } else {
             throw new BadParameterException(BadParameterException.ExceptionType.NAME);
         }
@@ -130,7 +125,7 @@ public class TaskListParseParameterService {
                 throw new InvalidParameterException(InvalidParameterException.ExceptionType.PRIORITY);
             }
             if (priority > 0 && priority <= 5) {
-                return (byte) priority;
+                return (byte)priority;
             } else {
                 throw new OutOfRangePriorityException();
             }
@@ -155,7 +150,6 @@ public class TaskListParseParameterService {
             } catch (NumberFormatException e) {
                 throw new InvalidParameterException(InvalidParameterException.ExceptionType.OFFSET);
             }
-
         } else {
             throw new BadParameterException(BadParameterException.ExceptionType.OFFSET);
         }
@@ -177,7 +171,6 @@ public class TaskListParseParameterService {
             } catch (NumberFormatException e) {
                 throw new InvalidParameterException(InvalidParameterException.ExceptionType.LIMIT);
             }
-
         } else {
             throw new BadParameterException(BadParameterException.ExceptionType.LIMIT);
         }
@@ -314,5 +307,4 @@ public class TaskListParseParameterService {
             throw new InvalidParameterException(InvalidParameterException.ExceptionType.DONE_SORT);
         }
     }
-
 }

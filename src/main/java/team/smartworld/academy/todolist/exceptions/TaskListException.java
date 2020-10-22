@@ -7,10 +7,12 @@ import lombok.Getter;
  */
 @Getter
 public class TaskListException extends Exception {
+
     /**
      * Код ошибки
      */
     private final int codeException;
+
     /**
      * Сообщение для пользователя
      */

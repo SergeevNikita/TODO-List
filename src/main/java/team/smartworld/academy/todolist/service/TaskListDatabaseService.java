@@ -2,12 +2,9 @@ package team.smartworld.academy.todolist.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team.smartworld.academy.todolist.entity.Task;
-import team.smartworld.academy.todolist.entity.TaskList;
-import team.smartworld.academy.todolist.exceptions.DatabaseNotAvailableException;
-import team.smartworld.academy.todolist.exceptions.NotFoundException;
-import team.smartworld.academy.todolist.repository.TaskListRepository;
-import team.smartworld.academy.todolist.repository.TaskRepository;
+import team.smartworld.academy.todolist.entity.*;
+import team.smartworld.academy.todolist.exceptions.*;
+import team.smartworld.academy.todolist.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -17,10 +14,12 @@ import java.util.*;
  */
 @Service
 public class TaskListDatabaseService {
+
     /**
      * Обьекты репозиториев для работы с БД
      */
     private final TaskRepository taskRepository;
+
     private final TaskListRepository taskListRepository;
 
     /**
@@ -34,7 +33,6 @@ public class TaskListDatabaseService {
         this.taskRepository = taskRepository;
         this.taskListRepository = taskListRepository;
     }
-
 
     /**
      * Метод для получения обьекта Task из БД
@@ -157,13 +155,15 @@ public class TaskListDatabaseService {
      * @throws DatabaseNotAvailableException выбрасывает исключение если БД не отвечает
      */
     // ИЗМЕНИТЬ РЕАЛИЗАЦИЮ в рамках требований задания
-    public List<Map<String, String>> getAllTaskList(long offset, int limit,
-                                                    boolean dateCreatedSort, boolean dateChangeSort,
-                                                    boolean nameSort, boolean isDoneSort,
-                                                    LocalDateTime dateCreatedFilter,
-                                                    LocalDateTime dateChangeFilter,
-                                                    String nameFilter,
-                                                    Boolean doneFilter) throws DatabaseNotAvailableException {
+    public List<Map<String, String>> getAllTaskList(
+            long offset, int limit,
+            boolean dateCreatedSort, boolean dateChangeSort,
+            boolean nameSort, boolean isDoneSort,
+            LocalDateTime dateCreatedFilter,
+            LocalDateTime dateChangeFilter,
+            String nameFilter,
+            Boolean doneFilter
+    ) throws DatabaseNotAvailableException {
         Iterable<TaskList> oTaskList;
         try {
             oTaskList = taskListRepository.findAll();

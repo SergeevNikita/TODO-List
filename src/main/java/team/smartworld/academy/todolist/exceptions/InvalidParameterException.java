@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class InvalidParameterException extends TaskListException {
+
     /**
      * Конструктор
      *
@@ -16,7 +17,6 @@ public class InvalidParameterException extends TaskListException {
     public InvalidParameterException(ExceptionType exceptionType) {
         super(exceptionType.message, exceptionType.codeException);
     }
-
 
     public enum ExceptionType {
         TASK_LIST_ID("Task List Id", 100),
@@ -33,6 +33,7 @@ public class InvalidParameterException extends TaskListException {
         DONE_SORT("doneSort", 111);
 
         private final String message;
+
         private final int codeException;
 
         ExceptionType(String name, int ordinal) {

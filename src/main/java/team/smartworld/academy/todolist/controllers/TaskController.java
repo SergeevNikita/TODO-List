@@ -59,8 +59,8 @@ public class TaskController {
             @PathVariable("taskIdString") String taskIdString
     )
             throws TaskListException {
-        UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
-        UUID taskId = TaskParseParameterService.parseTaskId(taskIdString);
+        UUID taskListId = ParseParameterService.parseTaskListId(taskListIdString);
+        UUID taskId = ParseParameterService.parseTaskId(taskIdString);
         Task task = dbServiceTask.getTask(taskListId, taskId);
         dbServiceTask.deleteTask(task);
     }
@@ -86,9 +86,9 @@ public class TaskController {
     )
             throws TaskListException {
 
-        UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
-        UUID id = TaskParseParameterService.parseTaskId(taskIdString);
-        boolean done = TaskListParseParameterService.getDone(mapData);
+        UUID taskListId = ParseParameterService.parseTaskListId(taskListIdString);
+        UUID id = ParseParameterService.parseTaskId(taskIdString);
+        boolean done = ParseParameterService.getDone(mapData);
         Task task = dbServiceTask.getTask(taskListId, id);
         task.setDone(done);
         task = dbServiceTask.saveTask(task);
@@ -119,20 +119,20 @@ public class TaskController {
             @RequestBody Map<String, String> mapData
     )
             throws TaskListException {
-        UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
-        UUID taskId = TaskParseParameterService.parseTaskId(taskIdString);
+        UUID taskListId = ParseParameterService.parseTaskListId(taskListIdString);
+        UUID taskId = ParseParameterService.parseTaskId(taskIdString);
         Task task = dbServiceTask.getTask(taskListId, taskId);
         if (mapData.containsKey("name")) {
-            task.setName(TaskListParseParameterService.getName(mapData));
+            task.setName(ParseParameterService.getName(mapData));
         }
         if (mapData.containsKey("title")) {
-            task.setTitle(TaskParseParameterService.getTitle(mapData));
+            task.setTitle(ParseParameterService.getTitle(mapData));
         }
         if (mapData.containsKey("done")) {
-            task.setDone(TaskListParseParameterService.getDone(mapData));
+            task.setDone(ParseParameterService.getDone(mapData));
         }
         if (mapData.containsKey("priority")) {
-            task.setPriority(TaskParseParameterService.getPriority(mapData));
+            task.setPriority(ParseParameterService.getPriority(mapData));
         }
         task = dbServiceTask.saveTask(task);
         return new ResponseEntity<>(task, HttpStatus.OK);
@@ -158,10 +158,10 @@ public class TaskController {
                             "\n\t\"priority\":\"3\"\n}")
             @RequestBody Map<String, String> mapData
     ) throws TaskListException {
-        UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
-        String name = TaskListParseParameterService.getName(mapData);
-        String title = TaskParseParameterService.getTitle(mapData);
-        byte priority = TaskParseParameterService.getPriority(mapData);
+        UUID taskListId = ParseParameterService.parseTaskListId(taskListIdString);
+        String name = ParseParameterService.getName(mapData);
+        String title = ParseParameterService.getTitle(mapData);
+        byte priority = ParseParameterService.getPriority(mapData);
         TaskList taskList = dbServiceTaskList.getTaskList(taskListId);
 
         Task task = new Task();
@@ -194,8 +194,8 @@ public class TaskController {
     )
             throws TaskListException {
 
-        UUID taskListId = TaskListParseParameterService.parseTaskListId(taskListIdString);
-        UUID taskId = TaskParseParameterService.parseTaskId(taskIdString);
+        UUID taskListId = ParseParameterService.parseTaskListId(taskListIdString);
+        UUID taskId = ParseParameterService.parseTaskId(taskIdString);
         Task task = dbServiceTask.getTask(taskListId, taskId);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }

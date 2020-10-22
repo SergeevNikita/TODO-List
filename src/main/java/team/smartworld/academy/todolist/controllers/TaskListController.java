@@ -52,7 +52,7 @@ public class TaskListController {
             @ApiParam(value = "Id task list", required = true)
             @PathVariable("taskListIdString") String taskListIdString
     ) throws TaskListException {
-        UUID id = TaskListParseParameterService.parseTaskListId(taskListIdString);
+        UUID id = ParseParameterService.parseTaskListId(taskListIdString);
         dbServiceTaskList.deleteTaskList(id);
     }
 
@@ -69,7 +69,7 @@ public class TaskListController {
             @ApiParam(value = "Id task list", required = true)
             @PathVariable("taskListIdString") String taskListIdString
     ) throws TaskListException {
-        UUID id = TaskListParseParameterService.parseTaskListId(taskListIdString);
+        UUID id = ParseParameterService.parseTaskListId(taskListIdString);
         TaskList taskList = dbServiceTaskList.getTaskList(id);
         return new ResponseEntity<>(taskList, HttpStatus.OK);
     }
@@ -95,8 +95,8 @@ public class TaskListController {
             @RequestBody Map<String, String> mapData
     )
             throws TaskListException {
-        UUID id = TaskListParseParameterService.parseTaskListId(taskListIdString);
-        String name = TaskListParseParameterService.getName(mapData);
+        UUID id = ParseParameterService.parseTaskListId(taskListIdString);
+        String name = ParseParameterService.getName(mapData);
         TaskList taskList = dbServiceTaskList.getTaskList(id);
         taskList.setName(name);
         taskList.setDateChange(LocalDateTime.now());
@@ -121,45 +121,45 @@ public class TaskListController {
         // Пагинация
         long offset = 0L;
         if (mapData.containsKey("offset")) {
-            offset = TaskListParseParameterService.getOffset(mapData);
+            offset = ParseParameterService.getOffset(mapData);
         }
         int limit = 10;
         if (mapData.containsKey("limit")) {
-            limit = TaskListParseParameterService.getLimit(mapData);
+            limit = ParseParameterService.getLimit(mapData);
         }
         // сортировка
         boolean dateCreatedSort = false;
         if (mapData.containsKey("dateCreatedSort")) {
-            dateCreatedSort = TaskListParseParameterService.getDateCreatedSort(mapData);
+            dateCreatedSort = ParseParameterService.getDateCreatedSort(mapData);
         }
         boolean dateChangeSort = false;
         if (mapData.containsKey("dateChangeSort")) {
-            dateChangeSort = TaskListParseParameterService.getDateChangeSort(mapData);
+            dateChangeSort = ParseParameterService.getDateChangeSort(mapData);
         }
         boolean nameSort = false;
         if (mapData.containsKey("nameSort")) {
-            nameSort = TaskListParseParameterService.getNameSort(mapData);
+            nameSort = ParseParameterService.getNameSort(mapData);
         }
         boolean doneSort = false;
         if (mapData.containsKey("doneSort")) {
-            doneSort = TaskListParseParameterService.getDoneSort(mapData);
+            doneSort = ParseParameterService.getDoneSort(mapData);
         }
         // фильтрация
         LocalDateTime dateCreatedFilter = null;
         if (mapData.containsKey("dateCreated")) {
-            dateCreatedFilter = TaskListParseParameterService.getDateCreated(mapData);
+            dateCreatedFilter = ParseParameterService.getDateCreated(mapData);
         }
         LocalDateTime dateChangeFilter = null;
         if (mapData.containsKey("dateChange")) {
-            dateChangeFilter = TaskListParseParameterService.getDateChange(mapData);
+            dateChangeFilter = ParseParameterService.getDateChange(mapData);
         }
         String nameFilter = null;
         if (mapData.containsKey("name")) {
-            nameFilter = TaskListParseParameterService.getName(mapData);
+            nameFilter = ParseParameterService.getName(mapData);
         }
         Boolean doneFilter = null;
         if (mapData.containsKey("done")) {
-            doneFilter = TaskListParseParameterService.getDone(mapData);
+            doneFilter = ParseParameterService.getDone(mapData);
         }
 
         List<Map<String, String>> taskListDate = dbServiceTaskList.getAllTaskList(offset, limit,
@@ -186,7 +186,7 @@ public class TaskListController {
             @ApiParam(value = "Json name data", required = true, example = "{\n\t\"name\":\"name task list\"\n}")
             @RequestBody Map<String, String> mapData
     ) throws TaskListException {
-        String name = TaskListParseParameterService.getName(mapData);
+        String name = ParseParameterService.getName(mapData);
         TaskList taskList = new TaskList();
         taskList.setName(name);
         taskList.setDateCreated(LocalDateTime.now());

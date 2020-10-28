@@ -148,10 +148,10 @@ public class ParseParameterService {
                 int page = Integer.parseInt(mapData.get("page"));
                 return Math.max(page, 0);
             } catch (NumberFormatException e) {
-                throw new InvalidParameterException(InvalidParameterException.ExceptionType.OFFSET);
+                throw new InvalidParameterException(InvalidParameterException.ExceptionType.PAGE);
             }
         } else {
-            throw new BadParameterException(BadParameterException.ExceptionType.OFFSET);
+            throw new BadParameterException(BadParameterException.ExceptionType.PAGE);
         }
     }
 

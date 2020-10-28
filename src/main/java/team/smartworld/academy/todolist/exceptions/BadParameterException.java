@@ -25,7 +25,7 @@ public class BadParameterException extends TaskListException {
         PRIORITY("priority", 203),
         DATE_CREATED("dateCreated", 204),
         DATE_CHANGE("dateChange", 205),
-        OFFSET("offset", 206),
+        PAGE("page", 206),
         LIMIT("limit", 207);
 
         private final String message;

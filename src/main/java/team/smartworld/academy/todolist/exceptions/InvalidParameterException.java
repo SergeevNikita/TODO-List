@@ -24,7 +24,7 @@ public class InvalidParameterException extends TaskListException {
         DONE("done", 102),
         PRIORITY("priority", 103),
         LIMIT("limit", 104),
-        OFFSET("offset", 105),
+        PAGE("page", 105),
         DATE_CREATED("dateCreated", 106),
         DATE_CHANGE("dateChange", 107);
 

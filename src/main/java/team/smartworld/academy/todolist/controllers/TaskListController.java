@@ -19,7 +19,7 @@ import java.util.*;
  * @version 1.0
  */
 @RestController
-@RequestMapping(value = "/todo/api/taskList", consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/todo/api/taskList", produces = "application/json")
 @Api(value = "Task List Controller", consumes = "application/json", produces = "application/json")
 public class TaskListController {
 

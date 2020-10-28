@@ -47,7 +47,10 @@ public class TaskListController {
             notes = "Deleting Task List by id")
     @DeleteMapping("/{taskListIdString}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiResponse(code = 500, message = "Database not available")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Database not available")
+    })
     public void deleteTaskList(
             @ApiParam(value = "Id task list", required = true)
             @PathVariable("taskListIdString") String taskListIdString
@@ -64,6 +67,11 @@ public class TaskListController {
      */
     @ApiOperation(value = "Get Task List",
             notes = "Getting Task List by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Database not available")
+    })
     @GetMapping("/{taskListIdString}")
     public ResponseEntity<?> getTaskList(
             @ApiParam(value = "Id task list", required = true)
@@ -85,7 +93,8 @@ public class TaskListController {
     @ApiOperation(value = "Rename Task List",
             notes = "Rename Task List by id")
     @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "Not Found or Empty name value"),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Database not available")
     })
     public ResponseEntity<?> renameTaskList(
@@ -113,6 +122,11 @@ public class TaskListController {
     @GetMapping
     @ApiOperation(value = "Get all Task List",
             notes = "Getting all Task List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Database not available")
+    })
     public ResponseEntity<?> getAllTaskLists(
             @ApiParam(value = "Json pagination, sorting and filtering data", required = true,
                     example = "{\n\t\"page\":\"0\"," +
@@ -176,7 +190,7 @@ public class TaskListController {
     @ApiOperation(value = "Create Task List",
             notes = "Creating Task List")
     @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "Not Found or Empty name value"),
+            @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 500, message = "Database not available")
     })
     public ResponseEntity<?> createTaskList(

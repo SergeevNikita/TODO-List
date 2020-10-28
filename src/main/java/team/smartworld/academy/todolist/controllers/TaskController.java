@@ -50,6 +50,10 @@ public class TaskController {
      */
     @ApiOperation(value = "Deleting Task",
             notes = "Deleting Task by taskListId and id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Database not available")
+    })
     @DeleteMapping("/{taskListIdString}/task/{taskIdString}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(
@@ -75,6 +79,11 @@ public class TaskController {
      */
     @ApiOperation(value = "Mark is done Task",
             notes = "Marking is done Task by taskListId and id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Database not available")
+    })
     @PatchMapping("/{taskListIdString}/task/{taskIdString}")
     public ResponseEntity<?> markDoneTask(
             @ApiParam(value = "Id task list", required = true)
@@ -105,6 +114,11 @@ public class TaskController {
      */
     @ApiOperation(value = "Change Task",
             notes = "Change Task by taskListId and id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Database not available")
+    })
     @PutMapping("/{taskListIdString}/task/{taskIdString}")
     public ResponseEntity<?> changeTask(
             @ApiParam(value = "Id task list", required = true)
@@ -147,6 +161,10 @@ public class TaskController {
      */
     @ApiOperation(value = "Create Task",
             notes = "Creating Task by taskListId and id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 500, message = "Database not available")
+    })
     @PostMapping("/{taskListIdString}/task")
     public ResponseEntity<?> newTask(
             @ApiParam(value = "Id task list", required = true)
@@ -184,6 +202,10 @@ public class TaskController {
      */
     @ApiOperation(value = "Get Task",
             notes = "Getting Task by taskListId and id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Database not available")
+    })
     @GetMapping("/{taskListIdString}/task/{taskIdString}")
     public ResponseEntity<?> getTask(
             @ApiParam(value = "Id task list", required = true)

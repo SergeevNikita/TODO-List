@@ -47,11 +47,6 @@ public class TaskList {
     private boolean done;
 
     /**
-     * Количество завершенных Task
-     */
-    private Long numberOfCompletedTask;
-
-    /**
      * Список обьектов Task
      */
     @OneToMany(mappedBy = "taskList", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)

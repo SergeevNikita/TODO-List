@@ -117,32 +117,23 @@ public class TaskListController {
             @ApiParam(value = "Json pagination, sorting and filtering data", required = true)
             @RequestBody Map<String, String> mapData
     ) throws TaskListException {
-        // Проверки и прочее.
         // Пагинация
-        long offset = 0L;
-        if (mapData.containsKey("offset")) {
-            offset = ParseParameterService.getOffset(mapData);
+        int page = 0;
+        if (mapData.containsKey("page")) {
+            page = ParseParameterService.getPage(mapData);
         }
         int limit = 10;
         if (mapData.containsKey("limit")) {
             limit = ParseParameterService.getLimit(mapData);
         }
         // сортировка
-        boolean dateCreatedSort = false;
-        if (mapData.containsKey("dateCreatedSort")) {
-            dateCreatedSort = ParseParameterService.getDateCreatedSort(mapData);
+        String sortBy = "id";
+        if (mapData.containsKey("sortBy")) {
+            sortBy = ParseParameterService.getSortBy(mapData);
         }
-        boolean dateChangeSort = false;
-        if (mapData.containsKey("dateChangeSort")) {
-            dateChangeSort = ParseParameterService.getDateChangeSort(mapData);
-        }
-        boolean nameSort = false;
-        if (mapData.containsKey("nameSort")) {
-            nameSort = ParseParameterService.getNameSort(mapData);
-        }
-        boolean doneSort = false;
-        if (mapData.containsKey("doneSort")) {
-            doneSort = ParseParameterService.getDoneSort(mapData);
+        boolean ask = true;
+        if (mapData.containsKey("ask")) {
+            ask = Boolean.parseBoolean(mapData.get("ask")); // переделать метод!!!!!!
         }
         // фильтрация
         LocalDateTime dateCreatedFilter = null;
@@ -162,8 +153,7 @@ public class TaskListController {
             doneFilter = ParseParameterService.getDone(mapData);
         }
 
-        List<Map<String, String>> taskListDate = dbServiceTaskList.getAllTaskList(offset, limit,
-                dateCreatedSort, dateChangeSort, nameSort, doneSort,
+        List<Map<String, String>> taskListDate = dbServiceTaskList.getAllTaskList(page, limit, sortBy, ask,
                 dateCreatedFilter, dateChangeFilter, nameFilter, doneFilter
         );
         return new ResponseEntity<>(taskListDate, HttpStatus.OK);
@@ -191,6 +181,7 @@ public class TaskListController {
         taskList.setName(name);
         taskList.setDateCreated(LocalDateTime.now());
         taskList.setDateChange(LocalDateTime.now());
+        taskList.setDone(true);
         Map.Entry<String, UUID> createdTaskListId = Map.entry("id", dbServiceTaskList.saveTaskList(taskList).getId());
         return new ResponseEntity<>(createdTaskListId, HttpStatus.CREATED);
     }

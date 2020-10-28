@@ -1,13 +1,18 @@
 package team.smartworld.academy.todolist.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import team.smartworld.academy.todolist.entity.*;
 import team.smartworld.academy.todolist.exceptions.*;
-import team.smartworld.academy.todolist.repository.TaskRepository;
+import team.smartworld.academy.todolist.repository.*;
+import team.smartworld.academy.todolist.specs.TaskSpecs;
 
 import java.util.*;
 
+/**
+ * Сервис работы с базой данных обьекта Task
+ */
 @Service
 public class TaskDatabaseService {
 
@@ -16,21 +21,18 @@ public class TaskDatabaseService {
      */
     private final TaskRepository taskRepository;
 
-    /**
-     * Сервис работы с базой данных обьекта TaskList
-     */
-    private final TaskListDatabaseService taskListDatabaseService;
+    private final TaskListRepository taskListRepository;
 
     /**
      * Конструктор
      *
-     * @param taskRepository          принемает обьект TaskRepository
-     * @param taskListDatabaseService принемает обьект сервиса работы с базой данных обьекта TaskList
+     * @param taskRepository     принемает обьект TaskRepository
+     * @param taskListRepository принемает обьект TaskListRepository
      */
     @Autowired
-    public TaskDatabaseService(TaskRepository taskRepository, TaskListDatabaseService taskListDatabaseService) {
+    public TaskDatabaseService(TaskRepository taskRepository, TaskListRepository taskListRepository) {
         this.taskRepository = taskRepository;
-        this.taskListDatabaseService = taskListDatabaseService;
+        this.taskListRepository = taskListRepository;
     }
 
     /**
@@ -43,14 +45,13 @@ public class TaskDatabaseService {
      * @throws NotFoundException             выбрасывает исключение если обьект Task не найден в БД
      */
     public Task getTask(UUID taskListId, UUID taskId) throws DatabaseNotAvailableException, NotFoundException {
-        TaskList taskList = taskListDatabaseService.getTaskList(taskListId);
         Optional<Task> oTask;
         try {
-            oTask = taskRepository.findById(taskId);
+            oTask = taskRepository.findByIdAndTaskListId(taskId, taskListId);
         } catch (Exception e) {
             throw new DatabaseNotAvailableException();
         }
-        if (oTask.isPresent() && taskList.getTasks().contains(oTask.get())) {
+        if (oTask.isPresent()) {
             return oTask.get();
         } else {
             throw new NotFoundException(NotFoundException.ExceptionType.TASK_NOT_FOUND);
@@ -69,6 +70,8 @@ public class TaskDatabaseService {
         } catch (Exception e) {
             throw new DatabaseNotAvailableException();
         }
+        UUID taskListId = task.getTaskList().getId();
+        updateTaskListAfterChangeTask(taskListId);
     }
 
     /**
@@ -79,8 +82,28 @@ public class TaskDatabaseService {
      * @throws DatabaseNotAvailableException выбрасывает исключение если БД не отвечает
      */
     public Task saveTask(Task task) throws DatabaseNotAvailableException {
+        Task taskResult;
         try {
-            return taskRepository.save(task);
+            taskResult = taskRepository.save(task);
+        } catch (Exception e) {
+            throw new DatabaseNotAvailableException();
+        }
+        UUID taskListId = task.getTaskList().getId();
+        updateTaskListAfterChangeTask(taskListId);
+        return taskResult;
+    }
+
+    private void updateTaskListAfterChangeTask(UUID taskListId) throws DatabaseNotAvailableException {
+        try {
+            Optional<TaskList> oTaskList = taskListRepository.findById(taskListId);
+            if (oTaskList.isPresent()) {
+                TaskList taskList = oTaskList.get();
+                long countAllTask = taskRepository.count(Specification.where(TaskSpecs.withTaskList(taskList)));
+                long countDoneTask = taskRepository.count(Specification.where(TaskSpecs.withDone(true))
+                        .and(TaskSpecs.withTaskList(taskList)));
+                taskList.setDone(countAllTask == countDoneTask);
+                taskListRepository.save(taskList);
+            }
         } catch (Exception e) {
             throw new DatabaseNotAvailableException();
         }

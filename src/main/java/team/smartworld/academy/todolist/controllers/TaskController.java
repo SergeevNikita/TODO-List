@@ -152,8 +152,7 @@ public class TaskController {
             @ApiParam(value = "Id task list", required = true)
             @PathVariable("taskListIdString") String taskListIdString,
             @ApiParam(value = "Json data", required = true,
-                    example = "{\n\t\"done\":\"true\"," +
-                            "\n\t\"name\":\"name task\"," +
+                    example = "{\n\t\"name\":\"name task\"," +
                             "\n\t\"title\":\"eny title\"," +
                             "\n\t\"priority\":\"3\"\n}")
             @RequestBody Map<String, String> mapData

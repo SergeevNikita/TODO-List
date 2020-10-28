@@ -82,7 +82,7 @@ public class ParseParameterService {
      */
     public static String getName(Map<String, String> mapData) throws BadParameterException {
         if (mapData.containsKey("name") && !mapData.get("name").isEmpty()) {
-            String name = mapData.get("name").replaceAll("[^\\p{L}\\p{Z}]", "").trim();
+            String name = mapData.get("name").replaceAll("[^\\p{javaAlphabetic}\\p{Digit}\\p{Space}]+", "").trim();
             return name.length() < NAME_MAX_SIZE ? name : name.substring(0, NAME_MAX_SIZE);
         } else {
             throw new BadParameterException(BadParameterException.ExceptionType.NAME);
@@ -99,8 +99,8 @@ public class ParseParameterService {
      */
     public static String getTitle(Map<String, String> mapData) throws BadParameterException {
         if (mapData.containsKey("title")) {
-            String title = mapData.get("title").replaceAll("[^\\p{L}\\p{Z}]", "").trim();
-            return title.length() < TITLE_MAX_SIZE ? title : title.substring(0, TITLE_MAX_SIZE);
+            String title = mapData.get("title").replaceAll("[^\\p{javaAlphabetic}\\p{Digit}\\p{Space}]+", "").trim();
+            return title.length() <= TITLE_MAX_SIZE ? title : title.substring(0, TITLE_MAX_SIZE);
         } else {
             throw new BadParameterException(BadParameterException.ExceptionType.TITLE);
         }
@@ -142,11 +142,11 @@ public class ParseParameterService {
      * @throws BadParameterException     параметр отсутствует или отсутствует значение параметра
      * @throws InvalidParameterException неверный формат параметра
      */
-    public static long getOffset(Map<String, String> mapData) throws BadParameterException, InvalidParameterException {
-        if (mapData.containsKey("offset") && !mapData.get("offset").isEmpty()) {
+    public static int getPage(Map<String, String> mapData) throws BadParameterException, InvalidParameterException {
+        if (mapData.containsKey("page") && !mapData.get("page").isEmpty()) {
             try {
-                long offset = Long.parseLong(mapData.get("offset"));
-                return Math.max(offset, 0L);
+                int page = Integer.parseInt(mapData.get("page"));
+                return Math.max(page, 0);
             } catch (NumberFormatException e) {
                 throw new InvalidParameterException(InvalidParameterException.ExceptionType.OFFSET);
             }
@@ -167,7 +167,7 @@ public class ParseParameterService {
         if (mapData.containsKey("limit") && !mapData.get("limit").isEmpty()) {
             try {
                 int limit = Integer.parseInt(mapData.get("limit"));
-                return limit < 10 || limit > 100 ? 10 : limit;
+                return limit < 1 || limit > 100 ? 10 : limit;
             } catch (NumberFormatException e) {
                 throw new InvalidParameterException(InvalidParameterException.ExceptionType.LIMIT);
             }
@@ -189,7 +189,7 @@ public class ParseParameterService {
         if (mapData.containsKey("dateCreated") && !mapData.get("dateCreated").isEmpty()) {
             String dateCreatedString = mapData.get("dateCreated");
             try {
-                return LocalDateTime.parse(dateCreatedString, DateTimeFormatter.ISO_INSTANT);
+                return LocalDateTime.parse(dateCreatedString, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             } catch (DateTimeParseException e) {
                 throw new InvalidParameterException(InvalidParameterException.ExceptionType.DATE_CREATED);
             }
@@ -211,7 +211,7 @@ public class ParseParameterService {
         if (mapData.containsKey("dateChange") && !mapData.get("dateChange").isEmpty()) {
             String dateChangeString = mapData.get("dateChange");
             try {
-                return LocalDateTime.parse(dateChangeString, DateTimeFormatter.ISO_INSTANT);
+                return LocalDateTime.parse(dateChangeString, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             } catch (DateTimeParseException e) {
                 throw new InvalidParameterException(InvalidParameterException.ExceptionType.DATE_CHANGE);
             }
@@ -221,90 +221,23 @@ public class ParseParameterService {
     }
 
     /**
-     * Метод извлекает параметр 'dateCreatedSort' и преобразует в тип boolean
+     * Метод извлекает параметр 'sortBy' и возвращает его значение
      *
      * @param mapData принемат обьект Map с параметрами
-     * @return возвращает значение параметра 'dateCreatedSort'
-     * @throws BadParameterException     параметр отсутствует или отсутствует значение параметра
-     * @throws InvalidParameterException неверный формат параметра
+     * @return возвращает значение параметра 'sortBy'
      */
-    public static boolean getDateCreatedSort(Map<String, String> mapData)
-            throws BadParameterException, InvalidParameterException {
-        if (!mapData.containsKey("dateCreatedSort")
-                || mapData.get("dateCreatedSort").isEmpty()) {
-            throw new BadParameterException(BadParameterException.ExceptionType.DATE_CREATED_SORT);
-        }
-        if ("true".equalsIgnoreCase(mapData.get("dateCreatedSort"))
-                || "false".equalsIgnoreCase(mapData.get("dateCreatedSort"))) {
-            return Boolean.parseBoolean(mapData.get("dateCreatedSort"));
-        } else {
-            throw new InvalidParameterException(InvalidParameterException.ExceptionType.DATE_CREATED_SORT);
-        }
-    }
-
-    /**
-     * Метод извлекает параметр 'dateChangeSort' и преобразует в тип boolean
-     *
-     * @param mapData принемат обьект Map с параметрами
-     * @return возвращает значение параметра 'dateChangeSort'
-     * @throws BadParameterException     параметр отсутствует или отсутствует значение параметра
-     * @throws InvalidParameterException неверный формат параметра
-     */
-    public static boolean getDateChangeSort(Map<String, String> mapData)
-            throws BadParameterException, InvalidParameterException {
-        if (!mapData.containsKey("dateChangeSort")
-                || mapData.get("dateChangeSort").isEmpty()) {
-            throw new BadParameterException(BadParameterException.ExceptionType.DATE_CHANGE_SORT);
-        }
-        if ("true".equalsIgnoreCase(mapData.get("dateChangeSort"))
-                || "false".equalsIgnoreCase(mapData.get("dateChangeSort"))) {
-            return Boolean.parseBoolean(mapData.get("dateChangeSort"));
-        } else {
-            throw new InvalidParameterException(InvalidParameterException.ExceptionType.DATE_CHANGE_SORT);
-        }
-    }
-
-    /**
-     * Метод извлекает параметр 'nameSort' и преобразует в тип boolean
-     *
-     * @param mapData принемат обьект Map с параметрами
-     * @return возвращает значение параметра 'nameSort'
-     * @throws BadParameterException     параметр отсутствует или отсутствует значение параметра
-     * @throws InvalidParameterException неверный формат параметра
-     */
-    public static boolean getNameSort(Map<String, String> mapData)
-            throws BadParameterException, InvalidParameterException {
-        if (!mapData.containsKey("nameSort")
-                || mapData.get("nameSort").isEmpty()) {
-            throw new BadParameterException(BadParameterException.ExceptionType.NAME_SORT);
-        }
-        if ("true".equalsIgnoreCase(mapData.get("nameSort"))
-                || "false".equalsIgnoreCase(mapData.get("nameSort"))) {
-            return Boolean.parseBoolean(mapData.get("nameSort"));
-        } else {
-            throw new InvalidParameterException(InvalidParameterException.ExceptionType.NAME_SORT);
-        }
-    }
-
-    /**
-     * Метод извлекает параметр 'doneSort' и преобразует в тип boolean
-     *
-     * @param mapData принемат обьект Map с параметрами
-     * @return возвращает значение параметра 'doneSort'
-     * @throws BadParameterException     параметр отсутствует или отсутствует значение параметра
-     * @throws InvalidParameterException неверный формат параметра
-     */
-    public static boolean getDoneSort(Map<String, String> mapData)
-            throws BadParameterException, InvalidParameterException {
-        if (!mapData.containsKey("doneSort")
-                || mapData.get("doneSort").isEmpty()) {
-            throw new BadParameterException(BadParameterException.ExceptionType.DONE_SORT);
-        }
-        if ("true".equalsIgnoreCase(mapData.get("doneSort"))
-                || "false".equalsIgnoreCase(mapData.get("doneSort"))) {
-            return Boolean.parseBoolean(mapData.get("doneSort"));
-        } else {
-            throw new InvalidParameterException(InvalidParameterException.ExceptionType.DONE_SORT);
+    public static String getSortBy(Map<String, String> mapData) {
+        switch (mapData.get("sortBy")) {
+            case "dateCreated":
+                return "dateCreated";
+            case "dateChange":
+                return "dateChange";
+            case "done":
+                return "done";
+            case "name":
+                return "name";
+            default:
+                return "id";
         }
     }
 }

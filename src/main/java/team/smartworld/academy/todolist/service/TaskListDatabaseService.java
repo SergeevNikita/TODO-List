@@ -1,16 +1,19 @@
 package team.smartworld.academy.todolist.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import team.smartworld.academy.todolist.entity.TaskList;
 import team.smartworld.academy.todolist.exceptions.*;
 import team.smartworld.academy.todolist.repository.TaskListRepository;
+import team.smartworld.academy.todolist.specs.TaskListSpecs;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 /**
- * Сервис работы с базой данных
+ * Сервис работы с базой данных обьекта TaskList
  */
 @Service
 public class TaskListDatabaseService {
@@ -84,12 +87,9 @@ public class TaskListDatabaseService {
     /**
      * Метод для получения списка обьектов TaskList
      *
-     * @param offset            начальная позиция
+     * @param page              страница
      * @param limit             размер списка
-     * @param dateCreatedSort   сортировка по дате создания
-     * @param dateChangeSort    сортировка по дате изменения
-     * @param nameSort          сортировка по имени
-     * @param isDoneSort        сортировка по полю выполненно
+     * @param sortBy            сортировка по полю
      * @param dateCreatedFilter фильтр по дате создания
      * @param dateChangeFilter  фильтр по дате изменения
      * @param nameFilter        фильтр по имени
@@ -97,28 +97,40 @@ public class TaskListDatabaseService {
      * @return возвращает список обьектов TaskList
      * @throws DatabaseNotAvailableException выбрасывает исключение если БД не отвечает
      */
-    // ИЗМЕНИТЬ РЕАЛИЗАЦИЮ в рамках требований задания
     public List<Map<String, String>> getAllTaskList(
-            long offset, int limit,
-            boolean dateCreatedSort, boolean dateChangeSort,
-            boolean nameSort, boolean isDoneSort,
+            int page, int limit, String sortBy, boolean ask,
             LocalDateTime dateCreatedFilter,
             LocalDateTime dateChangeFilter,
             String nameFilter,
             Boolean doneFilter
     ) throws DatabaseNotAvailableException {
-        Iterable<TaskList> oTaskList;
+
+        Sort sort;
+        if (ask) {
+            sort = Sort.by(sortBy).ascending();
+        } else {
+            sort = Sort.by(sortBy).descending();
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, limit, sort);
+        Page<TaskList> result;
+        long countAllTaskList;
+        long countOfDoneTaskList;
         try {
-            oTaskList = taskListRepository.findAll();
+            result = taskListRepository.findAll(Specification.where(TaskListSpecs.withName(nameFilter))
+                    .and(TaskListSpecs.withDateCreated(dateCreatedFilter))
+                    .and(TaskListSpecs.withDateChange(dateChangeFilter))
+                    .and(TaskListSpecs.withDone(doneFilter)), pageRequest);
+
+            countAllTaskList = taskListRepository.count();
+            countOfDoneTaskList = taskListRepository.count(Specification.where(TaskListSpecs.withDone(true)));
         } catch (Exception e) {
             throw new DatabaseNotAvailableException();
         }
-        Iterator<TaskList> listIterator = oTaskList.iterator();
+
         List<Map<String, String>> taskListDate = new ArrayList<>();
 
-        while (listIterator.hasNext() && limit > 0) {
-            TaskList taskList = listIterator.next();
-//            if (taskList.getId() >= offset) {
+        for (TaskList taskList : result) {
             Map<String, String> dataMap = new HashMap<>();
             dataMap.put("id", taskList.getId().toString());
             dataMap.put("name", taskList.getName());
@@ -126,9 +138,12 @@ public class TaskListDatabaseService {
             dataMap.put("dateChange", taskList.getDateChange().toString());
             dataMap.put("done", Boolean.toString(taskList.isDone()));
             taskListDate.add(dataMap);
-//                limit--;
-//            }
         }
+        Map<String, String> dataMap = new HashMap<>();
+        dataMap.put("countOfDoneTaskList", String.valueOf(countOfDoneTaskList));
+        dataMap.put("countOfUnfinishedTaskList", String.valueOf(countAllTaskList - countOfDoneTaskList));
+        taskListDate.add(dataMap);
+
         return taskListDate;
     }
 }

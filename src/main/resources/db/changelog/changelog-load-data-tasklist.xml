@@ -11,7 +11,6 @@
             <column header="date_created" name="date_created" type="DATE"/>
             <column header="done" name="done" type="BOOLEAN"/>
             <column header="name" name="name" type="STRING"/>
-            <column header="number_of_completed_task" name="number_of_completed_task" type="NUMERIC"/>
         </loadData>
     </changeSet>
 </databaseChangeLog>

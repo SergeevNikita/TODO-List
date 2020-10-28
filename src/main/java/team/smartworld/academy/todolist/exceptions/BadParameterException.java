@@ -26,11 +26,7 @@ public class BadParameterException extends TaskListException {
         DATE_CREATED("dateCreated", 204),
         DATE_CHANGE("dateChange", 205),
         OFFSET("offset", 206),
-        LIMIT("limit", 207),
-        DATE_CREATED_SORT("dateCreatedSort", 208),
-        DATE_CHANGE_SORT("dateChangeSort", 209),
-        NAME_SORT("nameSort", 210),
-        DONE_SORT("doneSort", 211);
+        LIMIT("limit", 207);
 
         private final String message;
 

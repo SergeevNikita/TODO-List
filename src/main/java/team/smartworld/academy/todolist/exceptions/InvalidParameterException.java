@@ -26,11 +26,7 @@ public class InvalidParameterException extends TaskListException {
         LIMIT("limit", 104),
         OFFSET("offset", 105),
         DATE_CREATED("dateCreated", 106),
-        DATE_CHANGE("dateChange", 107),
-        DATE_CREATED_SORT("dateCreatedSort", 108),
-        DATE_CHANGE_SORT("dateChangeSort", 109),
-        NAME_SORT("nameSort", 110),
-        DONE_SORT("doneSort", 111);
+        DATE_CHANGE("dateChange", 107);
 
         private final String message;
 

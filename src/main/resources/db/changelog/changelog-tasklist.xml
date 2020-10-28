@@ -16,7 +16,6 @@
             <column name="name" type="VARCHAR(30)">
                 <constraints nullable="false"/>
             </column>
-            <column name="number_of_completed_task" type="BIGINT"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>

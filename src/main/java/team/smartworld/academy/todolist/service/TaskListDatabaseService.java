@@ -1,5 +1,6 @@
 package team.smartworld.academy.todolist.service;
 
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -97,7 +98,7 @@ public class TaskListDatabaseService {
      * @return возвращает список обьектов TaskList
      * @throws DatabaseNotAvailableException выбрасывает исключение если БД не отвечает
      */
-    public List<Map<String, String>> getAllTaskList(
+    public String getAllTaskList(
             int page, int limit, String sortBy, boolean ask,
             LocalDateTime dateCreatedFilter,
             LocalDateTime dateChangeFilter,
@@ -142,8 +143,12 @@ public class TaskListDatabaseService {
         Map<String, String> dataMap = new HashMap<>();
         dataMap.put("countOfDoneTaskList", String.valueOf(countOfDoneTaskList));
         dataMap.put("countOfUnfinishedTaskList", String.valueOf(countAllTaskList - countOfDoneTaskList));
-        taskListDate.add(dataMap);
 
-        return taskListDate;
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("TaskLists", taskListDate);
+        jsonObject.putAll(dataMap);
+
+        return jsonObject.toJSONString();
     }
 }

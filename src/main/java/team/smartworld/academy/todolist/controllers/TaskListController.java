@@ -160,8 +160,7 @@ public class TaskListController {
         if (mapData.containsKey("done")) {
             doneFilter = ParseParameterService.getDone(mapData);
         }
-
-        List<Map<String, String>> taskListDate = dbServiceTaskList.getAllTaskList(page, limit, sortBy, ask,
+        String taskListDate = dbServiceTaskList.getAllTaskList(page, limit, sortBy, ask,
                 dateCreatedFilter, dateChangeFilter, nameFilter, doneFilter
         );
         return new ResponseEntity<>(taskListDate, HttpStatus.OK);

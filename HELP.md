@@ -1,34 +1,15 @@
-# Read Me First
-The following was discovered as part of building this project:
-
-* The original package name 'team.smartworld.academy.todo-list' is invalid and this project uses 'team.smartworld.academy.todolist' instead.
-
-# Getting Started
-
-### Reference Documentation
-For further reference, please consider the following sections:
-
-* [Official Gradle documentation](https://docs.gradle.org)
-* [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.3.4.RELEASE/gradle-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.3.4.RELEASE/gradle-plugin/reference/html/#build-image)
-* [Spring Web](https://docs.spring.io/spring-boot/docs/2.3.4.RELEASE/reference/htmlsingle/#boot-features-developing-web-applications)
-* [Spring Security](https://docs.spring.io/spring-boot/docs/2.3.4.RELEASE/reference/htmlsingle/#boot-features-security)
-* [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.3.4.RELEASE/reference/htmlsingle/#boot-features-jpa-and-spring-data)
-* [Liquibase Migration](https://docs.spring.io/spring-boot/docs/2.3.4.RELEASE/reference/htmlsingle/#howto-execute-liquibase-database-migrations-on-startup)
-
-### Guides
-The following guides illustrate how to use some features concretely:
-
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/bookmarks/)
-* [Securing a Web Application](https://spring.io/guides/gs/securing-web/)
-* [Spring Boot and OAuth2](https://spring.io/guides/tutorials/spring-boot-oauth2/)
-* [Authenticating a User with LDAP](https://spring.io/guides/gs/authenticating-ldap/)
-* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-
-### Additional Links
-These additional references should also help you:
-
-* [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
-
+## Краткое руководство по установке и запуску
+*	[Скачать jar файл приложения](https://github.com/SergeevNikita/todo-list/blob/main/bin/todo-list.jar)
+*	[Перейти на сайт Oracle, скачать и установить JRE в соответствии со своей ОС.](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)  
+	Официальная инструкция по загрузке и установке: 
+	[на сайте oracle.com (на английском)](https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html), 
+	[на сайте java.com (на русском)](https://www.java.com/ru/download/help/download_options_ru.html).
+*	[Скачать и установить базу данных PostgreSQL в соответствии со своей ОС.](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) либо использовать для установки встроенный пакетный менеджер. 
+    [Инструкция по установке на Русском.](https://wiki.postgresql.org/wiki/Russian/PostgreSQL-One-click-Installer-Guide)     
+    Примечание: во время установки назначить порт 5432, локаль отличную от DEFAULT (предпочтительно English USA).
+*   [Запустить сервер БД](https://postgrespro.ru/docs/postgresql/12/server-start) 
+*   В терминале ввести команду: psql -U postgres (или psql -U postgres -W нажать клавишу ввод и ввести пароль суперпользователя указанный при установке)
+*   После удачного входа создать роль командой: CREATE ROLE "User" WITH LOGIN NOSUPERUSER CREATEDB NOCREATEROLE INHERIT NOREPLICATION CONNECTION LIMIT -1 PASSWORD 'Password';
+*	Создать базу данных от имени нового пользователя: CREATE DATABASE "todo_list" WITH OWNER = "User" ENCODING = 'UTF8' CONNECTION LIMIT = -1;
+* 	Выйти введя команду: \q 
+*	Запустить на выполнение jar файл программы Todo List командой: java -jar [путь к файлу]./todo-list.jar

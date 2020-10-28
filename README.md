@@ -1,5 +1,5 @@
-# REST Приложение Todo List. 
-## Краткое руководство по установке и запуску
+#REST Приложение Todo List. 
+##Краткое руководство по установке и запуску
 *	[Скачать jar файл приложения](https://github.com/SergeevNikita/todo-list/blob/main/bin/todo-list.jar)
 *	[Перейти на сайт Oracle, скачать и установить JRE в соответствии со своей ОС.](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)  
 	Официальная инструкция по загрузке и установке: 

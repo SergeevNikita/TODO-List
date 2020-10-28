@@ -19,7 +19,7 @@ import java.util.*;
  * @version 1.0
  */
 @RestController
-@RequestMapping(value = "/todo/api/taskList")
+@RequestMapping(value = "/todo/api/taskList", consumes = "application/json", produces = "application/json")
 @Api(value = "Task List Controller", consumes = "application/json", produces = "application/json")
 public class TaskListController {
 
@@ -114,7 +114,15 @@ public class TaskListController {
     @ApiOperation(value = "Get all Task List",
             notes = "Getting all Task List")
     public ResponseEntity<?> getAllTaskLists(
-            @ApiParam(value = "Json pagination, sorting and filtering data", required = true)
+            @ApiParam(value = "Json pagination, sorting and filtering data", required = true,
+                    example = "{\n\t\"page\":\"0\"," +
+                            "\n\t\"limit\":\"10\"," +
+                            "\n\t\"sortBy\":\"name\"," +
+                            "\n\t\"ask\":\"false\"," +
+                            "\n\t\"name\":\"task list 1\"," +
+                            "\n\t\"dateCreated\":\"2020-10-17T12:36:17.070270\"," +
+                            "\n\t\"dateChange\":\"2020-10-17T12:36:17.070346\"," +
+                            "\n\t\"done\":\"false\"\n}")
             @RequestBody Map<String, String> mapData
     ) throws TaskListException {
         // Пагинация

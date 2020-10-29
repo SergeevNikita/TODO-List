@@ -157,7 +157,7 @@ public class TaskListController {
         }
         boolean ask = true;
         if (mapData.containsKey("ask")) {
-            ask = Boolean.parseBoolean(mapData.get("ask")); // переделать метод!!!!!!
+            ask = Boolean.parseBoolean(mapData.get("ask"));
         }
         // фильтрация
         LocalDateTime dateCreatedFilter = null;

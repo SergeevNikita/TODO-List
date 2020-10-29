@@ -8,6 +8,7 @@ import team.smartworld.academy.todolist.exceptions.*;
 import team.smartworld.academy.todolist.repository.*;
 import team.smartworld.academy.todolist.specs.TaskSpecs;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -61,16 +62,15 @@ public class TaskDatabaseService {
     /**
      * Метод для удаления обьекта Task из БД
      *
-     * @param task получает обьект типа task
+     * @param taskId получает обьект типа task
      * @throws DatabaseNotAvailableException выбрасывает исключение если БД не отвечает
      */
-    public void deleteTask(Task task) throws DatabaseNotAvailableException {
+    public void deleteTask(UUID taskListId, UUID taskId) throws DatabaseNotAvailableException {
         try {
-            taskRepository.delete(task);
+            taskRepository.deleteByIdAndTaskListId(taskId, taskListId);
         } catch (Exception e) {
             throw new DatabaseNotAvailableException();
         }
-        UUID taskListId = task.getTaskList().getId();
         updateTaskListAfterChangeTask(taskListId);
     }
 
@@ -91,6 +91,71 @@ public class TaskDatabaseService {
         UUID taskListId = task.getTaskList().getId();
         updateTaskListAfterChangeTask(taskListId);
         return taskResult;
+    }
+
+    /**
+     * Метод для обновления обьекта Task в БД
+     *
+     * @param taskListId ID обьекта TaskList
+     * @param taskId     ID обьекта Task
+     * @param name       имя задачи
+     * @param title      краткое описание
+     * @param done       выполнено или нет
+     * @param priority   приоритет
+     * @return изменённый обьект Task
+     * @throws DatabaseNotAvailableException выбрасывает исключение если БД не отвечает
+     * @throws NotFoundException             выбрасывает исключение если обьект Task не найден в БД
+     */
+    public Task updateTask(UUID taskListId, UUID taskId, String name, String title, Boolean done, Byte priority)
+            throws DatabaseNotAvailableException, NotFoundException {
+        Task task = getTask(taskListId, taskId);
+        if (name != null) {
+            task.setName(name);
+        }
+        if (title != null) {
+            task.setTitle(title);
+        }
+        if (done != null) {
+            task.setDone(done);
+        }
+        if (priority != null) {
+            task.setPriority(priority);
+        }
+        task.setDateChange(LocalDateTime.now());
+        return saveTask(task);
+    }
+
+    /**
+     * Метод для созания обьекта Task в БД
+     *
+     * @param taskListId ID обьекта TaskList
+     * @param name       имя задачи
+     * @param title      краткое описание
+     * @param priority   приоритет
+     * @return созданный обьект Task
+     * @throws DatabaseNotAvailableException выбрасывает исключение если БД не отвечает
+     */
+    public Task createTask(UUID taskListId, String name, String title, Byte priority) throws DatabaseNotAvailableException {
+        TaskList taskList;
+        try {
+            Optional<TaskList> oTaskList = taskListRepository.findById(taskListId);
+            if (oTaskList.isPresent()) {
+                taskList = oTaskList.get();
+            } else {
+                throw new NotFoundException(NotFoundException.ExceptionType.TASK_LIST_NOT_FOUND);
+            }
+        } catch (Exception e) {
+            throw new DatabaseNotAvailableException();
+        }
+        Task task = new Task();
+        task.setName(name);
+        task.setTitle(title);
+        task.setPriority(priority);
+        task.setDone(false);
+        task.setTaskList(taskList);
+        task.setDateCreated(LocalDateTime.now());
+        task.setDateChange(LocalDateTime.now());
+        return saveTask(task);
     }
 
     private void updateTaskListAfterChangeTask(UUID taskListId) throws DatabaseNotAvailableException {

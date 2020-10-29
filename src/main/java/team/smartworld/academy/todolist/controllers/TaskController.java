@@ -4,11 +4,10 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import team.smartworld.academy.todolist.entity.*;
+import team.smartworld.academy.todolist.entity.Task;
 import team.smartworld.academy.todolist.exceptions.*;
 import team.smartworld.academy.todolist.service.*;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -65,8 +64,7 @@ public class TaskController {
             throws TaskListException {
         UUID taskListId = ParseParameterService.parseTaskListId(taskListIdString);
         UUID taskId = ParseParameterService.parseTaskId(taskIdString);
-        Task task = dbServiceTask.getTask(taskListId, taskId);
-        dbServiceTask.deleteTask(task);
+        dbServiceTask.deleteTask(taskListId, taskId);
     }
 
     /**
@@ -101,10 +99,8 @@ public class TaskController {
                 || mapData.get("done").isEmpty()) {
             throw new BadParameterException(BadParameterException.ExceptionType.DONE);
         }
-        boolean done = ParseParameterService.isDone(mapData.get("done"));
-        Task task = dbServiceTask.getTask(taskListId, id);
-        task.setDone(done);
-        task = dbServiceTask.saveTask(task);
+        Boolean done = ParseParameterService.isDone(mapData.get("done"));
+        Task task = dbServiceTask.updateTask(taskListId, id, null, null, done, null);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
@@ -139,20 +135,23 @@ public class TaskController {
             throws TaskListException {
         UUID taskListId = ParseParameterService.parseTaskListId(taskListIdString);
         UUID taskId = ParseParameterService.parseTaskId(taskIdString);
-        Task task = dbServiceTask.getTask(taskListId, taskId);
+        String name = null;
         if (mapData.containsKey("name") && !mapData.get("name").isEmpty()) {
-            task.setName(ParseParameterService.parseName(mapData.get("name")));
+            name = ParseParameterService.parseName(mapData.get("name"));
         }
+        String title = null;
         if (mapData.containsKey("title")) {
-            task.setTitle(ParseParameterService.parseTitle(mapData.get("title")));
+            title = ParseParameterService.parseTitle(mapData.get("title"));
         }
+        Boolean done = null;
         if (mapData.containsKey("done")) {
-            task.setDone(ParseParameterService.isDone(mapData.get("done")));
+            done = ParseParameterService.isDone(mapData.get("done"));
         }
+        Byte priority = null;
         if (mapData.containsKey("priority")) {
-            task.setPriority(ParseParameterService.parsePriority(mapData.get("priority")));
+            priority = ParseParameterService.parsePriority(mapData.get("priority"));
         }
-        task = dbServiceTask.saveTask(task);
+        Task task = dbServiceTask.updateTask(taskListId, taskId, name, title, done, priority);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
@@ -199,17 +198,8 @@ public class TaskController {
         } else {
             throw new BadParameterException(BadParameterException.ExceptionType.PRIORITY);
         }
-        TaskList taskList = dbServiceTaskList.getTaskList(taskListId);
-
-        Task task = new Task();
-        task.setTaskList(taskList);
-        task.setName(name);
-        task.setTitle(title);
-        task.setPriority(priority);
-        task.setDateCreated(LocalDateTime.now());
-        task.setDateChange(LocalDateTime.now());
-
-        Map.Entry<String, UUID> createdTaskId = Map.entry("id", dbServiceTask.saveTask(task).getId());
+        Task task = dbServiceTask.createTask(taskListId, name, title, priority);
+        Map.Entry<String, UUID> createdTaskId = Map.entry("id", task.getId());
         return new ResponseEntity<>(createdTaskId, HttpStatus.CREATED);
     }
 

@@ -23,4 +23,12 @@ public interface TaskRepository extends CrudRepository<Task, UUID>, JpaSpecifica
      * @return возвращает Optional обьекта Task
      */
     Optional<Task> findByIdAndTaskListId(UUID id, UUID taskListId);
+
+    /**
+     * Метод для удаления из БД обьекта Task
+     *
+     * @param id         принемает Task id
+     * @param taskListId принемает TaskList id
+     */
+    void deleteByIdAndTaskListId(UUID id, UUID taskListId);
 }

@@ -22,11 +22,7 @@ public class BadParameterException extends TaskListException {
         NAME("name", 200),
         TITLE("title", 201),
         DONE("done", 202),
-        PRIORITY("priority", 203),
-        DATE_CREATED("dateCreated", 204),
-        DATE_CHANGE("dateChange", 205),
-        PAGE("page", 206),
-        LIMIT("limit", 207);
+        PRIORITY("priority", 203);
 
         private final String message;
 

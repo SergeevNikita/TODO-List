@@ -33,6 +33,10 @@ dependencies {
 	}
 }
 
+archivesBaseName = 'todo-list'
+version = ""
+
+
 test {
 	useJUnitPlatform()
 }

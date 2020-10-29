@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import team.smartworld.academy.todolist.entity.TaskList;
-import team.smartworld.academy.todolist.exceptions.TaskListException;
+import team.smartworld.academy.todolist.exceptions.*;
 import team.smartworld.academy.todolist.service.*;
 
 import java.time.LocalDateTime;
@@ -105,7 +105,12 @@ public class TaskListController {
     )
             throws TaskListException {
         UUID id = ParseParameterService.parseTaskListId(taskListIdString);
-        String name = ParseParameterService.getName(mapData);
+        String name = "";
+        if (mapData.containsKey("name") && !mapData.get("name").isEmpty()) {
+            name = ParseParameterService.parseName(mapData.get("name"));
+        } else {
+            throw new BadParameterException(BadParameterException.ExceptionType.NAME);
+        }
         TaskList taskList = dbServiceTaskList.getTaskList(id);
         taskList.setName(name);
         taskList.setDateChange(LocalDateTime.now());
@@ -142,16 +147,16 @@ public class TaskListController {
         // Пагинация
         int page = 0;
         if (mapData.containsKey("page")) {
-            page = ParseParameterService.getPage(mapData);
+            page = ParseParameterService.parsePage(mapData.get("page"));
         }
         int limit = 10;
         if (mapData.containsKey("limit")) {
-            limit = ParseParameterService.getLimit(mapData);
+            limit = ParseParameterService.parseLimit(mapData.get("limit"));
         }
         // сортировка
         String sortBy = "id";
         if (mapData.containsKey("sortBy")) {
-            sortBy = ParseParameterService.getSortBy(mapData);
+            sortBy = ParseParameterService.parseSortBy(mapData.get("sortBy"));
         }
         boolean ask = true;
         if (mapData.containsKey("ask")) {
@@ -160,19 +165,19 @@ public class TaskListController {
         // фильтрация
         LocalDateTime dateCreatedFilter = null;
         if (mapData.containsKey("dateCreated")) {
-            dateCreatedFilter = ParseParameterService.getDateCreated(mapData);
+            dateCreatedFilter = ParseParameterService.parseDateCreated(mapData.get("dateCreated"));
         }
         LocalDateTime dateChangeFilter = null;
         if (mapData.containsKey("dateChange")) {
-            dateChangeFilter = ParseParameterService.getDateChange(mapData);
+            dateChangeFilter = ParseParameterService.parseDateChange(mapData.get("dateChange"));
         }
         String nameFilter = null;
-        if (mapData.containsKey("name")) {
-            nameFilter = ParseParameterService.getName(mapData);
+        if (mapData.containsKey("name") && !mapData.get("name").isEmpty()) {
+            nameFilter = ParseParameterService.parseName(mapData.get("name"));
         }
         Boolean doneFilter = null;
         if (mapData.containsKey("done")) {
-            doneFilter = ParseParameterService.getDone(mapData);
+            doneFilter = ParseParameterService.isDone(mapData.get("done"));
         }
         String taskListDate = dbServiceTaskList.getAllTaskList(page, limit, sortBy, ask,
                 dateCreatedFilter, dateChangeFilter, nameFilter, doneFilter
@@ -197,7 +202,12 @@ public class TaskListController {
             @ApiParam(value = "Json name data", required = true, example = "{\n\t\"name\":\"name task list\"\n}")
             @RequestBody Map<String, String> mapData
     ) throws TaskListException {
-        String name = ParseParameterService.getName(mapData);
+        String name;
+        if (mapData.containsKey("name") && !mapData.get("name").isEmpty()) {
+            name = ParseParameterService.parseName(mapData.get("name"));
+        } else {
+            throw new BadParameterException(BadParameterException.ExceptionType.NAME);
+        }
         TaskList taskList = new TaskList();
         taskList.setName(name);
         taskList.setDateCreated(LocalDateTime.now());

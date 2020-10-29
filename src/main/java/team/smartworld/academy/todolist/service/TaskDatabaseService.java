@@ -81,7 +81,7 @@ public class TaskDatabaseService {
      * @return возвращает сохраненный обьект Task
      * @throws DatabaseNotAvailableException выбрасывает исключение если БД не отвечает
      */
-    public Task saveTask(Task task) throws DatabaseNotAvailableException {
+    private Task saveTask(Task task) throws DatabaseNotAvailableException {
         Task taskResult;
         try {
             taskResult = taskRepository.save(task);
@@ -158,6 +158,12 @@ public class TaskDatabaseService {
         return saveTask(task);
     }
 
+    /**
+     * Мотод обновляющий поле done обьекта TaskList
+     *
+     * @param taskListId ID обьекта TaskList
+     * @throws DatabaseNotAvailableException выбрасывает исключение если БД не отвечает
+     */
     private void updateTaskListAfterChangeTask(UUID taskListId) throws DatabaseNotAvailableException {
         try {
             Optional<TaskList> oTaskList = taskListRepository.findById(taskListId);

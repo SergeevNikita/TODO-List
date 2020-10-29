@@ -151,4 +151,36 @@ public class TaskListDatabaseService {
 
         return jsonObject.toJSONString();
     }
+
+    /**
+     * Метод для переименования обьекта TaskList в БД
+     *
+     * @param taskListId принемает обьект TaskList
+     * @param name       новое имя списка
+     * @return изменённый обьект TaskList
+     * @throws DatabaseNotAvailableException выбрасывает исключение если БД не отвечает
+     * @throws NotFoundException             выбрасывает исключение если обьект TaskList не найден в БД
+     */
+    public TaskList renameTaskList(UUID taskListId, String name) throws DatabaseNotAvailableException, NotFoundException {
+        TaskList taskList = getTaskList(taskListId);
+        taskList.setName(name);
+        taskList.setDateChange(LocalDateTime.now());
+        return saveTaskList(taskList);
+    }
+
+    /**
+     * Метод для создания обьекта TaskList в БД
+     *
+     * @param name имя списка
+     * @return созданный обьект TaskList
+     * @throws DatabaseNotAvailableException выбрасывает исключение если БД не отвечает
+     */
+    public TaskList createTaskList(String name) throws DatabaseNotAvailableException {
+        TaskList taskList = new TaskList();
+        taskList.setName(name);
+        taskList.setDone(true);
+        taskList.setDateCreated(LocalDateTime.now());
+        taskList.setDateChange(LocalDateTime.now());
+        return saveTaskList(taskList);
+    }
 }

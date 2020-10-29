@@ -105,16 +105,13 @@ public class TaskListController {
     )
             throws TaskListException {
         UUID id = ParseParameterService.parseTaskListId(taskListIdString);
-        String name = "";
+        String name;
         if (mapData.containsKey("name") && !mapData.get("name").isEmpty()) {
             name = ParseParameterService.parseName(mapData.get("name"));
         } else {
             throw new BadParameterException(BadParameterException.ExceptionType.NAME);
         }
-        TaskList taskList = dbServiceTaskList.getTaskList(id);
-        taskList.setName(name);
-        taskList.setDateChange(LocalDateTime.now());
-        taskList = dbServiceTaskList.saveTaskList(taskList);
+        TaskList taskList = dbServiceTaskList.renameTaskList(id, name);
         return new ResponseEntity<>(taskList, HttpStatus.OK);
     }
 
@@ -208,12 +205,8 @@ public class TaskListController {
         } else {
             throw new BadParameterException(BadParameterException.ExceptionType.NAME);
         }
-        TaskList taskList = new TaskList();
-        taskList.setName(name);
-        taskList.setDateCreated(LocalDateTime.now());
-        taskList.setDateChange(LocalDateTime.now());
-        taskList.setDone(true);
-        Map.Entry<String, UUID> createdTaskListId = Map.entry("id", dbServiceTaskList.saveTaskList(taskList).getId());
+        TaskList taskList = dbServiceTaskList.createTaskList(name);
+        Map.Entry<String, UUID> createdTaskListId = Map.entry("id", taskList.getId());
         return new ResponseEntity<>(createdTaskListId, HttpStatus.CREATED);
     }
 }

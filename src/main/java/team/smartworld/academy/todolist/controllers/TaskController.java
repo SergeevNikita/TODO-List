@@ -27,18 +27,14 @@ public class TaskController {
      */
     private final TaskDatabaseService dbServiceTask;
 
-    private final TaskListDatabaseService dbServiceTaskList;
-
     /**
      * Конструктор
      *
-     * @param dbServiceTask     принемает обьект сервиса работы с базой данных Task
-     * @param dbServiceTaskList принемает обьект сервиса работы с базой данных TaskList
+     * @param dbServiceTask принемает обьект сервиса работы с базой данных Task
      */
     @Autowired
-    public TaskController(TaskDatabaseService dbServiceTask, TaskListDatabaseService dbServiceTaskList) {
+    public TaskController(TaskDatabaseService dbServiceTask) {
         this.dbServiceTask = dbServiceTask;
-        this.dbServiceTaskList = dbServiceTaskList;
     }
 
     /**
@@ -179,18 +175,17 @@ public class TaskController {
             @RequestBody Map<String, String> mapData
     ) throws TaskListException {
         UUID taskListId = ParseParameterService.parseTaskListId(taskListIdString);
-
-        String name;
-        if (mapData.containsKey("name") && !mapData.get("name").isEmpty()) {
-            name = ParseParameterService.parseName(mapData.get("name"));
-        } else {
-            throw new BadParameterException(BadParameterException.ExceptionType.NAME);
-        }
         String title;
         if (mapData.containsKey("title")) {
             title = ParseParameterService.parseTitle(mapData.get("title"));
         } else {
             throw new BadParameterException(BadParameterException.ExceptionType.TITLE);
+        }
+        String name;
+        if (mapData.containsKey("name") && !mapData.get("name").isEmpty()) {
+            name = ParseParameterService.parseName(mapData.get("name"));
+        } else {
+            throw new BadParameterException(BadParameterException.ExceptionType.NAME);
         }
         byte priority;
         if (mapData.containsKey("priority") && !mapData.get("priority").isEmpty()) {

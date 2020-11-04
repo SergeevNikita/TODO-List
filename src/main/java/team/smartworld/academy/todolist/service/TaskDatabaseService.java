@@ -3,6 +3,7 @@ package team.smartworld.academy.todolist.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team.smartworld.academy.todolist.entity.*;
 import team.smartworld.academy.todolist.exceptions.*;
 import team.smartworld.academy.todolist.repository.*;
@@ -14,6 +15,7 @@ import java.util.*;
 /**
  * Сервис работы с базой данных обьекта Task
  */
+@Transactional
 @Service
 public class TaskDatabaseService {
 
